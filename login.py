@@ -15,7 +15,7 @@ def register():
     register_window.resizable(False, False)
 
 def create_ui():
-    root.title("NHS Login")
+    root.title("Login")
     root.resizable(False, False)
 
     # Create a frame for the login section
