@@ -46,9 +46,11 @@ class DataValidator:
 
 class TestValidator(unittest.TestCase):
     def setUp(self):
+        # Create an instance of the DataValidator class to test data validation
         self.validator = DataValidator()
 
     def test_valid_email(self):
+        # Valid emails
         valid_emails = [
             'user@example.com',
             'email@example.co.jp',
@@ -61,10 +63,12 @@ class TestValidator(unittest.TestCase):
         ]
 
         for email in valid_emails:
+            # Tests valid emails
             self.assertTrue(self.validator.email(email))
 
 
     def test_invalid_email(self):
+        # Invalid emails
         invalid_emails = [
             'plainaddress',
             '@example.com',
@@ -74,9 +78,11 @@ class TestValidator(unittest.TestCase):
         ]
 
         for email in invalid_emails:
+            # Tests invalid emails
             self.assertFalse(self.validator.email(email))
 
     def test_valid_phone(self):
+        # Valid phone numbers
         valid_phones = [
 '+44 7975 556677',
 '07947674716',
@@ -86,6 +92,7 @@ class TestValidator(unittest.TestCase):
 ]
 
         for phone in valid_phones:
+            # Tests valid phone numbers
             self.assertTrue(self.validator.phone(phone))
 
 if __name__ == '__main__':
