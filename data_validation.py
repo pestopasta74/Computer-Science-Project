@@ -58,14 +58,14 @@ class TestValidator(unittest.TestCase):
     def test_valid_email(self):
         # Valid emails
         valid_emails = [
-            'user@example.com',
-            'email@example.co.jp',
-            'firstname-lastname@example.com',
-            'email@example.museum',
-            'email@example.name',
-            '_______@example.com',
-            '1234567890@example.com',
-            'email@123.123.123.123'
+        'user@example.com',
+        'email@example.co.jp',
+        'firstname-lastname@example.com',
+        'email@example.museum',
+        'email@example.name',
+        '_______@example.com',
+        '1234567890@example.com',
+        'email@123.123.123.123'
         ]
 
         for email in valid_emails:
@@ -76,11 +76,11 @@ class TestValidator(unittest.TestCase):
     def test_invalid_email(self):
         # Invalid emails
         invalid_emails = [
-            'plainaddress',
-            '@example.com',
-            'email@',
-            'email@.com',
-            'email@'
+        'plainaddress',
+        '@example.com',
+        'email@',
+        'email@.com',
+        'email@'
         ]
 
         for email in invalid_emails:
@@ -91,16 +91,33 @@ class TestValidator(unittest.TestCase):
     def test_valid_phone(self):
         # Valid phone numbers
         valid_phones = [
-'+44 7975 556677',
-'07947674716',
-'020 7946 0716',
-'02079460716',
-'07975 556677'
+        '+44 7975 556677',
+        '07947674716',
+        '020 7946 0716',
+        '02079460716',
+        '07975 556677'
 ]
 
         for phone in valid_phones:
             # Tests valid phone numbers
             self.assertTrue(self.validator.phone(phone))
+
+
+    def test_invalid_phone(self):
+        # Invalid phone numbers
+        invalid_phones = [
+        '1234567890',
+        '1234',
+        '12345678901234567890',
+        '1234567890',
+        '+1234567890',
+        '+44 1234 56789',
+]
+
+        for phone in invalid_phones:
+            # Tests invalid phone numbers
+            self.assertFalse(self.validator.phone(phone))
+
 
 if __name__ == '__main__':
     unittest.main()
