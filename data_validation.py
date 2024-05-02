@@ -20,13 +20,12 @@ class DataValidator:
 
 
     def username(self, data):
-        if re.match(r'^[a-zA-Z0-9]+$', data):
-            return True
-        return False
+        pattern = r'^[a-zA-Z0-9]+$'
+        return bool(re.fullmatch(pattern, data))
 
 
     def birthdate(self, data):
-        if re.match(r'^\d{4}-\d{2}-\d{2}$', data):
+        if re.match(r'^\d{4}-\d{2}-\d{2}$', data) and 1900 < int(data[:4]) < 2020 and 0 < int(data[5:7]) < 13 and 0 < int(data[8:10]) < 32:
             return True
         return False
 
@@ -110,7 +109,7 @@ class TestValidator(unittest.TestCase):
         '12345678901234567890',
         '1234567890',
         '+1234567890',
-        '+44 1234 56789',
+        '+44 1234 56789'
 ]
 
         for phone in invalid_phones:
@@ -174,6 +173,34 @@ class TestValidator(unittest.TestCase):
 
         for username in invalid_usernames:
             self.assertFalse(self.validator.username(username))
+
+
+    def test_valid_birthdate(self):
+        # Valid birthdates
+        valid_birthdates = [
+        '2000-01-01',
+        '1990-12-31',
+        '1990-01-01',
+        '2000-12-31',
+        '2007-05-21'
+        ]
+
+        for birthdate in valid_birthdates:
+            self.assertTrue(self.validator.birthdate(birthdate))
+
+
+    def test_invalid_birthdate(self):
+        # Invalid birthdates
+        invalid_birthdates = [
+        '2000-01-32',
+        '1990-12-32',
+        '1990-00-01',
+        '2000-13-31',
+        '2007-05-32'
+        ]
+
+        for birthdate in invalid_birthdates:
+            self.assertFalse(self.validator.birthdate(birthdate))
 
 if __name__ == '__main__':
     unittest.main()
