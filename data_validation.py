@@ -147,6 +147,33 @@ class TestValidator(unittest.TestCase):
         for name in invalid_names:
             self.assertFalse(self.validator.name(name))
 
+
+    def test_valid_usernames(self):
+        valid_usernames = [
+        'username123',
+        'USERNAME',
+        'User123',
+        'user',
+        '1234567890',
+        'abc123XYZ'
+]
+        for username in valid_usernames:
+            self.assertTrue(self.validator.username(username))
+
+    def test_invalid_usernames(self):
+        # Invalid usernames
+        invalid_usernames = [
+        'username@',
+        'user name',
+        'user.name',
+        'user-name',
+        'user_name',
+        '123@abc'
+]
+
+        for username in invalid_usernames:
+            self.assertFalse(self.validator.username(username))
+
 if __name__ == '__main__':
     unittest.main()
 
