@@ -160,6 +160,7 @@ class TestValidator(unittest.TestCase):
         for username in valid_usernames:
             self.assertTrue(self.validator.username(username))
 
+
     def test_invalid_usernames(self):
         # Invalid usernames
         invalid_usernames = [
