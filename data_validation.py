@@ -15,9 +15,8 @@ class DataValidator:
 
 
     def name(self, data):
-        if re.match(r'^[a-zA-Z]+$', data):
-            return True
-        return False
+        pattern = r'^[a-zA-Z]+(?:[ -][a-zA-Z]+)*$'
+        return bool(re.fullmatch(pattern, data))
 
 
     def username(self, data):
@@ -118,6 +117,35 @@ class TestValidator(unittest.TestCase):
             # Tests invalid phone numbers
             self.assertFalse(self.validator.phone(phone))
 
+
+    def test_valid_names(self):
+        # Valid names
+        valid_names = [
+        'Preston',
+        'Tyler',
+        'Spencer',
+        'Millie Hardy',
+        'Ebony-Jane Smith',
+        'Preston Leighton Tony Shaun Whiteman',
+        'CJ',
+        'J'
+        ]
+
+        for name in valid_names:
+            self.assertTrue(self.validator.name(name))
+
+
+    def test_invalid_names(self):
+        # Invalid names
+        invalid_names = [
+        'ca55idy',
+        'pestopasta74',
+        'John.Doe',
+        '#Maria'
+]
+
+        for name in invalid_names:
+            self.assertFalse(self.validator.name(name))
 
 if __name__ == '__main__':
     unittest.main()
