@@ -35,7 +35,6 @@ class DataValidator:
             return True
         return False
 
-
     def length_check(self, data, length, option):
         if option == 'min':
             if len(data) >= length:

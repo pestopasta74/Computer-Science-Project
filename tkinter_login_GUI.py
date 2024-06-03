@@ -1,6 +1,6 @@
 import tkinter as tk
 
-class GUI(tk.Tk):
+class login_GUI(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Login Form")
@@ -39,5 +39,5 @@ class GUI(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = GUI()
+    app = login_GUI()
     app.mainloop()
