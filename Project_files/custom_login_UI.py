@@ -1,5 +1,6 @@
 from data_validation import DataValidator
 import customtkinter as ctk
+import CTkMessagebox as ctkmsg
 
 # Set appearance mode and default color theme
 ctk.set_appearance_mode("System")
@@ -12,11 +13,11 @@ class LoginUI:
     def __init__(self, master):
         self.master = master
         self.master.title('Login')
-        self.master.geometry('600x400')
+        self.master.geometry('500x300')
         self.validator = DataValidator()
 
         self.create_widgets()
-        self.setup_layout()
+        self.place_widgets()
 
     def create_widgets(self):
         self.label_email = ctk.CTkLabel(self.master, text='Email')
@@ -28,24 +29,24 @@ class LoginUI:
         self.submit_button = ctk.CTkButton(self.master, text='Submit', command=self.validate)
         self.forgot_password_button = ctk.CTkButton(self.master, text='Forgotten password?')
 
-    def setup_layout(self):
-        self.label_email.grid(row=0, column=0)
-        self.entry_email.grid(row=0, column=1)
+    def place_widgets(self):
+        self.label_email.place(x=100, y=50)
+        self.entry_email.place(x=200, y=50)
 
-        self.label_password.grid(row=1, column=0)
-        self.entry_password.grid(row=1, column=1)
+        self.label_password.place(x=100, y=100)
+        self.entry_password.place(x=200, y=100)
 
-        self.submit_button.grid(row=2, column=0)
-        self.forgot_password_button.grid(row=2, column=1)
+        self.submit_button.place(x=200, y=150)
+        self.forgot_password_button.place(x=200, y=200)
 
     def validate(self):
         email = self.entry_email.get()
         password = self.entry_password.get()
 
         if self.validator.email(email) and self.validator.password(password):
-            ctk.CTkMessageBox.showinfo('Success', 'Valid email and password')
+            pass
         else:
-            ctk.CTkMessageBox.showerror('Error', 'Invalid email or password')
+            ctkmsg.CTkMessagebox(title="Try again", message="Incorrect Email/Password", icon="cancel", option_1="Retry")
 
 if __name__ == '__main__':
     app = LoginUI(root)
