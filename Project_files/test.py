@@ -1,48 +1,59 @@
-from CTkMessagebox import CTkMessagebox
-import customtkinter
+import customtkinter as ctk
+from tkinter import messagebox
 
-def show_info():
-    # Default messagebox for showing some information
-    CTkMessagebox(title="Info", message="This is a CTkMessagebox!")
+def show_retry_messagebox():
+    response = messagebox.askretrycancel("Try again", "Incorrect Email/Password")
+    return "Retry" if response else "Cancel"
 
-def show_checkmark():
-    # Show some positive message with the checkmark icon
-    CTkMessagebox(message="CTkMessagebox is successfully installed.",
-                  icon="check", option_1="Thanks")
-    
-def show_error():
-    # Show some error message
-    CTkMessagebox(title="Error", message="Something went wrong!!!", icon="cancel")
-    
-def show_warning():
-    # Show some retry/cancel warnings
-    msg = CTkMessagebox(title="Warning Message!", message="Unable to connect!",
-                  icon="warning", option_1="Cancel", option_2="Retry")
-    
-    if msg.get()=="Retry":
-        show_warning()
-        
-def ask_question():
-    # get yes/no answers
-    msg = CTkMessagebox(title="Exit?", message="Do you want to close the program?",
-                        icon="question", option_1="Cancel", option_2="No", option_3="Yes")
-    response = msg.get()
-    
-    if response=="Yes":
-        app.destroy()       
+
+def validate():
+    email = entry_email.get()
+    password = entry_password.get()
+
+    print(f"Validating: email={email}, password={password}")
+
+    if email == "test123" and password == "testing guys":  # Simulating successful validation
+        print("Validation successful")
     else:
-        print("Click 'Yes' to exit!")
-              
-app = customtkinter.CTk()
-app.rowconfigure((0,1,2,3,4,5), weight=1)
-app.columnconfigure(0, weight=1)
-app.minsize(200,250)
+        print("Validation failed")
+        if show_retry_messagebox() == "Retry":
+            print("Retrying... Clearing entries and setting focus.")
+            reset_entries()
 
-customtkinter.CTkLabel(app, text="CTk Messagebox Examples").grid(padx=20)
-customtkinter.CTkButton(app, text="Check CTkMessagebox", command=show_checkmark).grid(padx=20, pady=10, sticky="news")
-customtkinter.CTkButton(app, text="Show Info", command=show_info).grid(padx=20, pady=10, sticky="news")
-customtkinter.CTkButton(app, text="Show Error", command=show_error).grid(padx=20, pady=10, sticky="news")
-customtkinter.CTkButton(app, text="Show Warning", command=show_warning).grid(padx=20, pady=10, sticky="news")
-customtkinter.CTkButton(app, text="Ask Question", command=ask_question).grid(padx=20, pady=(10,20), sticky="news")
+def reset_entries():
+    # Ensure the entry fields are enabled and focus is set correctly
+    entry_email.configure(state='normal')
+    entry_password.configure(state='normal')
+    entry_email.delete(0, 'end')
+    entry_password.delete(0, 'end')
+    entry_email.focus_set()  # Explicitly set the focus
+    print("Entries cleared and focus set to email entry.")
 
-app.mainloop()
+# Set appearance mode and default color theme
+ctk.set_appearance_mode("System")
+ctk.set_default_color_theme("blue")
+
+# Create the main application window
+root = ctk.CTk()
+root.resizable(False, False)
+root.geometry('400x200')
+root.title('Login')
+
+# Create widgets
+label_email = ctk.CTkLabel(root, text='Email')
+entry_email = ctk.CTkEntry(root, corner_radius=10, border_width=2, border_color='black', width=250)
+label_password = ctk.CTkLabel(root, text='Password')
+entry_password = ctk.CTkEntry(root, show='*', corner_radius=10, border_width=2, border_color='black', width=250)
+submit_button = ctk.CTkButton(root, text='Submit', command=validate, fg_color='green', hover_color='darkgreen')
+forgot_password_button = ctk.CTkButton(root, text='Forgotten password?', text_color='black')
+
+# Place widgets
+label_email.place(x=25, y=25)
+entry_email.place(x=100, y=25)
+label_password.place(x=25, y=75)
+entry_password.place(x=100, y=75)
+submit_button.place(x=215, y=135)
+forgot_password_button.place(x=60, y=135)
+
+if __name__ == '__main__':
+    root.mainloop()
