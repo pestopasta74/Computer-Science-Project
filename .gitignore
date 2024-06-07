@@ -161,3 +161,8 @@ cython_debug/
 
 # MacOS
 .DS_Store
+
+# Venv
+bin/
+include/
+pyvenv.cfg
