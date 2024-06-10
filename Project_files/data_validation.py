@@ -7,6 +7,15 @@ class DataValidator:
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,}|(?:\d{1,3}\.){3}\d{1,3})$'
         return bool(re.fullmatch(pattern, data))
 
+    def password(self, password):
+        # password validation (at least 8 characters, one letter, one number)
+        if len(password) < 8:
+            return False
+        if not re.search(r'[A-Za-z]', password):
+            return False
+        if not re.search(r'\d', password):
+            return False
+        return True
 
     def phone(self, data):
         # Checks weather the number is a valid UK phone number

@@ -1,6 +1,8 @@
 from data_validation import DataValidator
 import customtkinter as ctk
 from tkinter import messagebox
+from user_management import UserDatabase
+
 
 # Set appearance mode and default color theme
 ctk.set_appearance_mode("System")
@@ -16,6 +18,7 @@ class LoginUI:
         self.master.title('Login')
         self.master.geometry('400x200')
         self.validator = DataValidator()
+        self.verify_user = UserDatabase()
 
         self.create_widgets()
         self.place_widgets()
@@ -51,8 +54,12 @@ class LoginUI:
         email = self.entry_email.get()
         password = self.entry_password.get()
 
-        if self.validator.email(email) and self.validator.password(password):
-            pass
+        if self.validator.email(email):
+            if self.verify_user.check_user(email, password):
+                messagebox.showinfo("Success", "Login Successful")
+            else:
+                if self.show_retry_messagebox() == "Retry":
+                    self.reset_entries()
         else:
             if self.show_retry_messagebox() == "Retry":
                 self.reset_entries()
