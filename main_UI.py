@@ -9,14 +9,21 @@ ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
 
 # Create the main application window
-root = ctk.CTk()
-root.resizable(True, True)
+
+
+class Sidebar(ctk.CTkFrame):
+    def __init__(self, root, *args, **kwargs):
+        super().__init__(root, *args, **kwargs)
+
 
 class MainUI:
-    def __init__(self, master):
-        self.master = master
-        self.master.title('Home')
-        self.master.geometry('1250x750')
+    def __init__(self):
+        self.root = ctk.CTk()
+        self.root.resizable(True, True)
+        self.root.title('Home')
+        self.root.geometry('1250x750')
+
+        self.sidebar = Sidebar(self.root, width=200, height=750)
 
         self.create_widgets()
         self.place_widgets()
@@ -29,8 +36,8 @@ class MainUI:
 
 
 def main():
-    app = MainUI(root)
-    app.master.mainloop()
+    app = MainUI()
+    app.root.mainloop()
 
 
 if __name__ == '__main__':
