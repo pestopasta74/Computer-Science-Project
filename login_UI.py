@@ -27,17 +27,17 @@ class LoginUI:
         self.entry_email = ctk.CTkEntry(self.master, corner_radius=7, border_width=1, border_color="gray50", width=300, placeholder_text='Email')
         self.entry_password = ctk.CTkEntry(self.master, show='*', corner_radius=7,  border_width=1, border_color="gray50", width=300, placeholder_text='Password')
 
+        self.remember_me = ctk.CTkCheckBox(self.master, text='Remember me', text_color=('black', 'white'), border_width=1, border_color='gray50')
         self.submit_button = ctk.CTkButton(self.master, text='Submit', command=self.validate, fg_color='green', hover_color='darkgreen', text_color='black')
-        self.forgot_password_button = ctk.CTkButton(self.master, text='Forgotten password?', text_color='black')
 
     def place_widgets(self):
         # Place the widgets on the window
 
-        self.entry_email.place(x=60, y=25)
-        self.entry_password.place(x=60, y=75)
+        self.entry_email.place(x=50, y=29)
+        self.entry_password.place(x=50, y=86)
 
-        self.submit_button.place(x=215, y=135)
-        self.forgot_password_button.place(x=60, y=135)
+        self.remember_me.place(x=50, y=143)
+        self.submit_button.place(x=210, y=143)
 
     def show_retry_messagebox(self):
         response = messagebox.askretrycancel("Try again", "Incorrect Email/Password")
