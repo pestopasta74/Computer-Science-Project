@@ -1,7 +1,7 @@
-from data_validation import DataValidator
+from modules.data_validation import DataValidator
 import customtkinter as ctk
 from tkinter import messagebox
-from user_management import UserDatabase
+from modules.user_management import UserDatabase
 
 
 # Set appearance mode and default color theme

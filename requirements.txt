@@ -1,3 +1,4 @@
 pygame
 customtkinter
 bcrypt
+sqlite3
