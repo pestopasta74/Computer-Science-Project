@@ -10,21 +10,22 @@ class UserDatabase:
     def create_table(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS users
                             (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            email TEXT NOT NULL,
+                            email TEXT NOT NULL UNIQUE,
                             password TEXT NOT NULL)''')
         self.conn.commit()
 
     def add_user(self, email, password):
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        print(hashed_password)
         self.cursor.execute("INSERT INTO users (email, password) VALUES (?, ?)",  (email, hashed_password))
         self.conn.commit()
 
     def check_user(self, email, password):
         self.cursor.execute("SELECT password FROM users WHERE email=?", (email,))
-        user = self.cursor.fetchone()
-        if user:
-            if bcrypt.checkpw(password.encode('utf-8'), user[0]):
-                return True
+        user_password = self.cursor.fetchone()[0]
+        if user_password:
+            if password == user_password or bcrypt.checkpw(password.encode("utf-8"), user_password.encode("utf-8")):
+                return user_password
         return False
 
     def close_connection(self):
