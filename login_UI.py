@@ -2,6 +2,7 @@ from modules.data_validation import DataValidator
 import customtkinter as ctk
 from tkinter import messagebox
 from modules.user_management import UserDatabase
+import bcrypt
 
 
 # Set appearance mode and default color theme
@@ -25,7 +26,7 @@ class LoginUI:
 
     def create_widgets(self):
         self.entry_email = ctk.CTkEntry(self.master, corner_radius=7, border_width=1, border_color="gray50", width=300, placeholder_text='Email')
-        self.entry_password = ctk.CTkEntry(self.master, show='*', corner_radius=7,  border_width=1, border_color="gray50", width=300, placeholder_text='Password')
+        self.entry_password = ctk.CTkEntry(self.master, show='•', corner_radius=7,  border_width=1, border_color="gray50", width=300, placeholder_text='Password')
 
         self.remember_me = ctk.CTkCheckBox(self.master, text='Remember me', text_color=('black', 'white'), border_width=1, border_color='gray50')
         self.submit_button = ctk.CTkButton(self.master, text='Submit', command=self.validate, fg_color='green', hover_color='darkgreen', text_color='black')
@@ -56,7 +57,12 @@ class LoginUI:
 
         if self.validator.email(email):
             if self.verify_user.check_user(email, password):
-                messagebox.showinfo("Success", "Login Successful")
+                if self.remember_me.get() == 1:
+                    # Save the email and password to a file
+                    f = open("user_login_info.txt", "x")
+                    f.write(email + '\n' + str(bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()))) # Save the hashed password
+                    
+                return True
             else:
                 if self.show_retry_messagebox() == "Retry":
                     self.reset_entries()
