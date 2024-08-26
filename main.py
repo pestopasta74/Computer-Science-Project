@@ -11,7 +11,8 @@ except FileNotFoundError:
 
 db = UserDatabase()
 if not db.check_user(email, password):
-    login_UI.main()
+    ui = login_UI
+    ui.main()
+    del ui
 
 main_UI.main()
-

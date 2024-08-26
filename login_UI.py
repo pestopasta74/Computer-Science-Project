@@ -72,7 +72,12 @@ class LoginUI:
                 # Save the hashed password
                 f.write(email + '\n' + hashed_password)
 
+        self.__del__()
         return True
+
+    def __del__(self):
+        self.verify_user.close_connection()
+        self.root.destroy()
 
 
 def main():
