@@ -51,7 +51,7 @@ class MainUI(ctk.CTk):
         # Add a tags title label
         tags_label = ctk.CTkLabel(
             self.sidebar_frame,
-            text="Tags:",
+            text="Categories:",
             font=("", 20, "bold"),
             wraplength=200  # Adjust this value if necessary
         )

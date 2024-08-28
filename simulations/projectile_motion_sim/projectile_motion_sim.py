@@ -1,7 +1,7 @@
 import pygame
 from sys import exit
-from modules.colourBank import Colour
-from modules.projectile_physics import physics_sim
+from colourBank import Colour
+from projectile_physics import physics_sim
 import math
 import random
 
