@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
+from modules.simulation_management import SimulationDatabase
 
 
 # Set appearance mode and default color theme
@@ -59,7 +60,7 @@ class MainUI(ctk.CTk):
 
 
         # Adding some example tags as buttons inside the sidebar_frame
-        tags = ["SUVAT Equations", "Fluid Simulation", "Waves"]
+        tags = SimulationDatabase().get_categories()
         for i, tag in enumerate(tags):
             tag_button = ctk.CTkButton(self.sidebar_frame, text=tag)
             tag_button.grid(row=i + 1, column=0, padx=5, pady=5, sticky="new")

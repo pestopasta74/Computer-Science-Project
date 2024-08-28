@@ -9,7 +9,7 @@ class SimulationDatabase:
         # Create Categories table first
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS Categories (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            name TEXT NOT NULL);''')  # Removed extra comma
+                            name TEXT NOT NULL);''')
         self.conn.commit()
 
     def create_simulations_table(self):
@@ -25,7 +25,7 @@ class SimulationDatabase:
 
     def add_simulation(self, title, description, file_path, category_id):
         # Fixed method to add a simulation to the Simulations table
-        self.cursor.execute("INSERT INTO Simulations (title, description, file_path, category_id) VALUES (?, ?, ?, ?)", 
+        self.cursor.execute("INSERT INTO Simulations (title, description, file_path, category_id) VALUES (?, ?, ?, ?)",
                             (title, description, file_path, category_id))
         self.conn.commit()
 
@@ -33,6 +33,11 @@ class SimulationDatabase:
         # Get simulations based on category
         self.cursor.execute("SELECT * FROM Simulations WHERE category_id=?", (category_id,))
         return self.cursor.fetchall()
+
+    def get_categories(self):
+        # Get all categories from the Categories table
+        self.cursor.execute("SELECT name FROM Categories")
+        return [category[0] for category in self.cursor.fetchall()]
 
     def add_category(self, name):
         # Add a new category to the Categories table
