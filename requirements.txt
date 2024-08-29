@@ -2,3 +2,4 @@ pygame
 customtkinter
 bcrypt
 sqlite3
+pillow

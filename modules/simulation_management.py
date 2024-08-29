@@ -63,7 +63,7 @@ def main():
 
     # Example usage
     db.add_category('Kinematics')
-    db.add_simulation('Projectile Motion Sim', 'Simulates the motion of a projectile under gravity.', '/simulations/projectile_motion_sim/image.png', '/simulations/projectile_motion_sim/main.py', 1)
+    db.add_simulation('Projectile Motion Sim', 'Simulates the motion of a projectile under gravity.', 'simulations/projectile_motion_sim/image.png', 'simulations/projectile_motion_sim/main.py', 1)
     print(db.get_simulations(1))
     print(db.search_simulations('Projectile'))
 

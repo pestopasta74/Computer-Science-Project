@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from modules.simulation_management import SimulationDatabase
+from PIL import Image
 
 
 # Set appearance mode and default color theme
@@ -9,25 +10,36 @@ ctk.set_default_color_theme("blue")
 
 # Create a class for each result (simulation) in the database
 class SimulationResult(ctk.CTkFrame):
-    def __init__(self, master, title, image, description, **kwargs):
+    def __init__(self, master, title, image_path, description, **kwargs):
         super().__init__(master, corner_radius=10, **kwargs)
         self.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=0)
+        self.title = title
 
         # Add some example content to the result frame
         title_label = ctk.CTkLabel(self, text=title, font=("", 16, "bold"))
         title_label.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
+        # Load the image and resize it to fit the frame
+        image_obj = ctk.CTkImage(light_image=Image.open(image_path), dark_image=Image.open(image_path), size=(600, 300))
+        image_label = ctk.CTkButton(self, image=image_obj, text='', width=900, height=350, command=self.on_click)
+        image_label.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
         description_label = ctk.CTkLabel(self, text=description)
-        description_label.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        description_label.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+    def on_click(self):
+        # Implement the click event for the result frame
+        print("Clicked on:", self.title)
 
 
 # Create a scrollable frame for the results
 class ScrollableResultsFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
