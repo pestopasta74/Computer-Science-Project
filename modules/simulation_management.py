@@ -18,15 +18,16 @@ class SimulationDatabase:
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             title TEXT NOT NULL,
                             description TEXT NOT NULL,
+                            image_path TEXT NOT NULL,
                             file_path TEXT NOT NULL,
                             category_id INTEGER,
                             FOREIGN KEY (category_id) REFERENCES Categories(id));''')
         self.conn.commit()
 
-    def add_simulation(self, title, description, file_path, category_id):
+    def add_simulation(self, title, description, image_path, file_path, category_id):
         # Fixed method to add a simulation to the Simulations table
-        self.cursor.execute("INSERT INTO Simulations (title, description, file_path, category_id) VALUES (?, ?, ?, ?)",
-                            (title, description, file_path, category_id))
+        self.cursor.execute("INSERT INTO Simulations (title, description, image_path, file_path, category_id) VALUES (?, ?, ?, ?, ?)",
+                            (title, description, image_path, file_path, category_id))
         self.conn.commit()
 
     def get_simulations(self, category_id):
@@ -62,7 +63,7 @@ def main():
 
     # Example usage
     db.add_category('Kinematics')
-    db.add_simulation('Projectile Motion Sim', 'Simulates the motion of a projectile under gravity.', '/path/to/projectile_sim', 1)
+    db.add_simulation('Projectile Motion Sim', 'Simulates the motion of a projectile under gravity.', '/simulations/projectile_motion_sim/image.png', '/simulations/projectile_motion_sim/main.py', 1)
     print(db.get_simulations(1))
     print(db.search_simulations('Projectile'))
 

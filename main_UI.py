@@ -7,6 +7,22 @@ from modules.simulation_management import SimulationDatabase
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
 
+# Create a class for each result (simulation) in the database
+class SimulationResult(ctk.CTkFrame):
+    def __init__(self, master, title, image, description, **kwargs):
+        super().__init__(master, corner_radius=10, **kwargs)
+        self.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        # Add some example content to the result frame
+        title_label = ctk.CTkLabel(self, text=title, font=("", 16, "bold"))
+        title_label.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        description_label = ctk.CTkLabel(self, text=description)
+        description_label.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+
 # Create a scrollable frame for the results
 class ScrollableResultsFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
@@ -16,8 +32,11 @@ class ScrollableResultsFrame(ctk.CTkScrollableFrame):
         self.grid_columnconfigure(0, weight=1)
 
         # Add some example content to the results_frame
-        example_result_label = ctk.CTkLabel(self, text="Constructive Interference Simulation")
-        example_result_label.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        db = SimulationDatabase()
+        simulations = db.get_simulations(1)  # Get simulations for category 1 (kinematics)
+        for i, (id, title, description, image_path, file_path, category_id) in enumerate(simulations):
+            result = SimulationResult(self, title, image_path, description)
+            result.grid(row=i, column=0, padx=10, pady=10, sticky="nsew")
 
 
 class MainUI(ctk.CTk):
