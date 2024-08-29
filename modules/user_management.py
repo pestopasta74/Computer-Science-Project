@@ -1,5 +1,6 @@
 import sqlite3
 import bcrypt
+from unittest import TestCase
 
 class UserDatabase:
     def __init__(self):
@@ -35,8 +36,9 @@ class UserDatabase:
         self.cursor.close()
         self.conn.close()
 
-# Example usage
-if __name__ == '__main__':
+def main():
     db = UserDatabase()
     db.add_user('john@hotmail.com', 'password123')
-    print(db.check_user('john@hotmail.com', 'password123'))  # True
+
+if __name__ == '__main__':
+    main()
