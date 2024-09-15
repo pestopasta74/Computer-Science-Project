@@ -9,6 +9,14 @@ import modules.physics as physics
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
 
+gravity_values = {
+    "Earth (9.81m/s²)": -9.81,
+    "Moon (1.625m/s²)": -1.625,
+    "Mars (3.720m/s²)": -3.72076,
+    "Jupiter (24.79m/s²)": -24.79,
+    "Neptune (11.15m/s²)": -11.15,
+    "Pluto (0.62m/s²)": -0.62
+}
 
 class MainUI(ctk.CTk):
     def __init__(self):
@@ -39,12 +47,12 @@ class MainUI(ctk.CTk):
         self.time = 0
 
         # Set up sidebar sliders and dropdowns
-        self.gravity_slider_label = ctk.CTkLabel(self.sidebar_frame, text="Gravity (m/s²)")
-        self.gravity_slider = ctk.CTkSlider(self.sidebar_frame, from_=0, to=20, number_of_steps=20, command=self.set_gravity)
+        self.gravity_slider = ctk.CTkSlider(self.sidebar_frame, from_=0, to=20, number_of_steps=20, command=lambda x: self.set_gravity(-x))
         self.gravity_slider.set(-self.physics.acceleration)
-        self.gravity_slider_label.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
         self.gravity_slider.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-        self.gravity_dropdown = ctk.CTkOptionMenu(self.sidebar_frame, values=["-9.81", "-10", "-20", "-30", "-40", "-50"])
+
+        self.gravity_dropdown = ctk.CTkOptionMenu(self.sidebar_frame, values=list(gravity_values.keys()), command=lambda x: self.set_gravity(gravity_values[x]))
+        self.gravity_dropdown.set(list(gravity_values.keys())[0])
         self.gravity_dropdown.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
         # Create a canvas for the simulation display
@@ -63,7 +71,8 @@ class MainUI(ctk.CTk):
         step = 10  # Update every 10ms
         self.time += step / 1000 * 2
         if self.time >= self.physics.landing_time:
-            return
+            self.time = 0
+        print("Animating")
         self.update_graph()
         self.after(step * 10, self.animate)
 
@@ -74,6 +83,9 @@ class MainUI(ctk.CTk):
         # Set the axis limits based on the max height and distance
         self.subplot.set_xlim(-0.01, (self.physics.landing_x) * 1.1)
         self.subplot.set_ylim(-0.01, (self.physics.max_height + self.physics.starting_displacement) * 1.1)
+        # Add axis labels
+        self.subplot.set_xlabel("Distance (m)")
+        self.subplot.set_ylabel("Height (m)")
 
         # Draw a base for the ground at y=0
         self.subplot.axhline(y=0, color='black')
@@ -90,7 +102,10 @@ class MainUI(ctk.CTk):
         self.subplot.plot(x, y, color='black')
 
         # Ball position at time t
-        radius = 0.25
+        # Radius is relative to the height of the view
+        max_y = (self.physics.max_height + self.physics.starting_displacement) * 1.1
+        max_x = self.physics.landing_x * 1.1
+        radius = max(max_y, max_x) / 75
         x, y = self.physics.ball_position(self.time)
         # Plot a circle, centered at (x, y + radius) with radius=radius
         self.subplot.add_patch(plt.patches.Circle((x, y + radius), radius, color='red'))
@@ -113,7 +128,7 @@ class MainUI(ctk.CTk):
         x, y = zip(*points)
         self.subplot.plot(x, y, color='black', linestyle='dotted')
         # Add a label above the horizontal line for the max height, in the middle
-        self.subplot.text(self.physics.x_at_max_height / 2, self.physics.max_height + self.physics.starting_displacement + radius + 0.25, f"Max Height: {self.physics.max_height:.2f}m", color='black')
+        self.subplot.text(self.physics.x_at_max_height / 2, self.physics.max_height + self.physics.starting_displacement + radius + 0.25, f"Max Height: {self.physics.max_height + self.physics.starting_displacement:.2f}m", color='black')
 
         # Labels
         # Show an x at the landing point
@@ -125,9 +140,13 @@ class MainUI(ctk.CTk):
         self.plot_canvas.draw()
 
     def set_gravity(self, event):
-        new_gravity = int(self.gravity_slider.get())
-        self.physics.acceleration = -new_gravity
-        self.update_graph()
+        new_gravity = event
+        if new_gravity not in gravity_values.values():
+            self.gravity_dropdown.set(f"Custom ({new_gravity}m/s²)")
+        self.gravity_slider.set(-new_gravity)
+        self.physics.acceleration = new_gravity
+        self.time = 0
+
 
 
 def main():
