@@ -1,6 +1,6 @@
 from modules.user_management import UserDatabase
 import login_UI
-import main_UI
+import start_screen
 
 # Trying to read the user login information from a file
 try:
@@ -19,5 +19,5 @@ if not db.check_user(email, password):
     ui.main()
     del ui
 
-# Display the main UI (as we now have a valid user)
-main_UI.main()
+# Display the start screen (as we now have a valid user)
+start_screen.main()

@@ -1,5 +1,5 @@
 # Computer-Science-Project
-This is a project for OCR Computer Science (The NEA portion), and this repository will serve as the proof of development of the application. The application will be a physics simulator designed to be used in A-level Physics lessons and it will take inspiration from PHET Simulations.
+This is a project for OCR Computer Science (The NEA portion), and this repository will serve as the proof of development of the application. The application will be a solar system simulator.
 
 ## Requirements
 
@@ -8,7 +8,6 @@ This is a project for OCR Computer Science (The NEA portion), and this repositor
 - tkinter library (usually comes with python)
 - customtkinter library
 - bcrypt library
-- a connection to the internet (to connect to the server)
 
 ## Installation
 
