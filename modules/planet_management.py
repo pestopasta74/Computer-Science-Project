@@ -1,3 +1,6 @@
+# Assuming that the simulation starts on 1st January 2000, 00:00:00 UTC
+# The database will store the planets' name, radius, mass, starting x and y coordinates, description, colour, and image path
+
 import sqlite3
 
 class SimulationDatabase:
@@ -5,49 +8,35 @@ class SimulationDatabase:
         self.conn = sqlite3.connect('database.db')
         self.cursor = self.conn.cursor()
 
-    def create_categories_table(self):
-        # Create Categories table first
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS Categories (
+    def create_planets_table(self):
+        # Create a Planets table with the specified columns
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS Planets (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            name TEXT NOT NULL);''')
+                            name TEXT NOT NULL,
+                            radius REAL NOT NULL,
+                            mass REAL NOT NULL,
+                            start_x REAL NOT NULL,
+                            start_y REAL NOT NULL,
+                            description TEXT,
+                            colour TEXT NOT NULL,
+                            image_path TEXT NOT NULL);''')
         self.conn.commit()
 
-    def create_simulations_table(self):
-        # Create Simulations table, referencing the Categories table
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS Simulations (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            title TEXT NOT NULL,
-                            description TEXT NOT NULL,
-                            image_path TEXT NOT NULL,
-                            file_path TEXT NOT NULL,
-                            category_id INTEGER,
-                            FOREIGN KEY (category_id) REFERENCES Categories(id));''')
+    def add_planet(self, name, radius, mass, start_x, start_y, description, colour, image_path):
+        # Add a planet to the Planets table
+        self.cursor.execute('''INSERT INTO Planets (name, radius, mass, start_x, start_y, description, colour, image_path)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                            (name, radius, mass, start_x, start_y, description, colour, image_path))
         self.conn.commit()
 
-    def add_simulation(self, title, description, image_path, file_path, category_id):
-        # Fixed method to add a simulation to the Simulations table
-        self.cursor.execute("INSERT INTO Simulations (title, description, image_path, file_path, category_id) VALUES (?, ?, ?, ?, ?)",
-                            (title, description, image_path, file_path, category_id))
-        self.conn.commit()
-
-    def get_simulations(self, category_id):
-        # Get simulations based on category
-        self.cursor.execute("SELECT * FROM Simulations WHERE category_id=?", (category_id,))
+    def get_planets(self):
+        # Get all planets from the Planets table
+        self.cursor.execute("SELECT * FROM Planets")
         return self.cursor.fetchall()
 
-    def get_categories(self):
-        # Get all categories from the Categories table
-        self.cursor.execute("SELECT name FROM Categories")
-        return [category[0] for category in self.cursor.fetchall()]
-
-    def add_category(self, name):
-        # Add a new category to the Categories table
-        self.cursor.execute("INSERT INTO Categories (name) VALUES (?)", (name,))
-        self.conn.commit()
-
-    def search_simulations(self, search_query):
-        # Search for simulations based on title
-        self.cursor.execute("SELECT * FROM Simulations WHERE title LIKE ?", (f"%{search_query}%",))
+    def search_planets(self, search_query):
+        # Search for planets based on name
+        self.cursor.execute("SELECT * FROM Planets WHERE name LIKE ?", (f"%{search_query}%",))
         return self.cursor.fetchall()
 
     def close_connection(self):
@@ -56,16 +45,18 @@ class SimulationDatabase:
         self.conn.close()
 
 def main():
-    # Initialize and create tables
+    # Initialize and create the planets table
     db = SimulationDatabase()
-    db.create_categories_table()
-    db.create_simulations_table()
+    db.create_planets_table()
 
-    # Example usage
-    db.add_category('Kinematics')
-    db.add_simulation('Projectile Motion Sim', 'Simulates the motion of a projectile under gravity.', 'simulations/projectile_motion_sim/image.png', 'simulations/projectile_motion_sim/main.py', 1)
-    print(db.get_simulations(1))
-    print(db.search_simulations('Projectile'))
+    # Example usage: Adding a planet
+    db.add_planet('Sun', 696340, 1.989 * 10**30, 0, 0, 'The Sun is the star at the center of the Solar System.', 'yellow', 'planet_images/sun.png')
+
+    # Print all planets
+    print(db.get_planets())
+
+    # Search for planets
+    print(db.search_planets('Earth'))
 
     # Close the database connection
     db.close_connection()

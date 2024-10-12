@@ -12,13 +12,14 @@ class UserDatabase:
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS users
                             (id INTEGER PRIMARY KEY AUTOINCREMENT,
                             email TEXT NOT NULL UNIQUE,
-                            password TEXT NOT NULL)''')
+                            password TEXT NOT NULL,
+                            is_admin BOOL NOR NULL);''')
         self.conn.commit()
 
-    def add_user(self, email, password):
+    def add_user(self, email, password, is_admin=False):
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         print(hashed_password)
-        self.cursor.execute("INSERT INTO users (email, password) VALUES (?, ?)",  (email, hashed_password))
+        self.cursor.execute("INSERT INTO users (email, password, is_admin) VALUES (?, ?, ?)",  (email, hashed_password, is_admin))
         self.conn.commit()
 
     def check_user(self, email, password):
@@ -38,7 +39,7 @@ class UserDatabase:
 
 def main():
     db = UserDatabase()
-    db.add_user('john@hotmail.com', 'password123')
+    db.add_user('john@hotmail.com', 'password123', is_admin=True)
 
 if __name__ == '__main__':
     main()
