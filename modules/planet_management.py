@@ -56,7 +56,7 @@ def main():
     AU = 1.496 * 10 ** 11  # Astronomical unit
     # Add planets to the database
     db.add_planet('Sun', 696340, 1.989 * 10**30, 0, 0, 0, 0, 'The Sun is the star at the center of the Solar System.', 'yellow', 'planet_images/sun.png')
-    db.add_planet('Mercury', 2439.7, 3.285 * 10**23, 0.39 * AU, 0, 0, 47400, 'Mercury is the smallest and innermost planet in the Solar System.', 'gray', 'planet_images/mercury.png')
+    db.add_planet('Mercury', 2439.7, 3.3011 * 10**23, 0.39 * AU, 0, 0, 47870, 'Mercury is the smallest and innermost planet in the Solar System.', 'gray', 'planet_images/mercury.png')
     db.add_planet('Venus', 6051.8, 4.867 * 10**24, 0.72 * AU, 0, 0, 35020, 'Venus is the second planet from the Sun and has a thick, toxic atmosphere.', 'orange', 'planet_images/venus.png')
     db.add_planet('Earth', 6371, 5.972 * 10**24, 1 * AU, 0, 0, 30000, 'The Earth is the third planet from the Sun.', 'blue', 'planet_images/earth.png')
     db.add_planet('Mars', 3389.5, 6.39 * 10**23, 1.52 * AU, 0, 0, 24077, 'Mars is the fourth planet from the Sun and is known as the Red Planet.', 'red', 'planet_images/mars.png')
