@@ -37,6 +37,9 @@ class UserDatabase:
         self.cursor.close()
         self.conn.close()
 
+#class UserSettingsDatabase:
+
+
 def main():
     db = UserDatabase()
     db.add_user('john@hotmail.com', 'password123', is_admin=True)

@@ -51,22 +51,7 @@ class Button:
         button_rect = self.icon.get_rect(topleft=(self.x, self.y))
         return button_rect.collidepoint(pos)
 
-# Define functions for each button action
-def play():
-    print("Play simulation")
-
-def pause():
-    print("Pause simulation")
-
-def restart():
-    print("Restart simulation")
-
-def slow_down():
-    print("Slow down simulation")
-
-def speed_up():
-    print("Speed up simulation")
-
+# Define placeholder functions for the buttons
 def open_settings():
     print("Open settings")
 
@@ -143,6 +128,14 @@ class Body:
         self.start_x += self.start_vx * time_step
         self.start_y += self.start_vy * time_step
 
+    def draw_orbit(self, frame_of_reference):
+        # Calculate the position based on the frame of reference
+        x = int((self.start_x - frame_of_reference.start_x) / scale_factor) + width // 2
+        y = int((self.start_y - frame_of_reference.start_y) / scale_factor) + height // 2
+
+        # Draw orbit
+        pygame.draw.circle(window, self.colour, (x, y), int(self.radius / scale_factor), 1)
+
     def reset(self):
         self.start_x = self.reset_x
         self.start_y = self.reset_y
@@ -200,7 +193,7 @@ class Simulator:
     def date(self):
         return self.epoch + datetime.timedelta(seconds=self.time)
 
-    def run(self):
+    def main(self):
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -221,6 +214,10 @@ class Simulator:
             # Draw buttons
             for button in self.buttons:
                 button.draw(window)
+
+            # Draw orbits
+            for body in self.bodies:
+                body.draw_orbit(frame_of_reference)
 
             # Add a text display for the current date
             large_font = pygame.font.SysFont('Arial', 24)  # Larger font for the date
@@ -251,4 +248,4 @@ sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune = [Body(*plan
 if __name__ == "__main__":
     sun.frame_of_reference = True
     sim = Simulator([sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune])
-    sim.run()
+    sim.main()

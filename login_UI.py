@@ -15,14 +15,19 @@ class LoginUI:
         self.root.resizable(False, False)
 
         self.root.title('Login')
-        self.root.geometry('400x200')
+        self.root.geometry('400x225')
         self.validator = DataValidator()
         self.verify_user = UserDatabase()
+
+        settings_image = ctk.get_image("settings.png")
 
         self.create_widgets()
         self.place_widgets()
 
     def create_widgets(self):
+        self.close_button = ctk.CTkButton(self.root, text='', command=self.__del__, fg_color='red', hover_color='darkred', text_color='black')
+        self.settings_button = ctk.CTkButton(self.root, text='', command=self.__del__, fg_color='blue', hover_color='darkblue', text_color='black')
+
         self.entry_email = ctk.CTkEntry(self.root, corner_radius=7, border_width=1, border_color="gray50", width=300, placeholder_text='Email')
         self.entry_password = ctk.CTkEntry(self.root, show='•', corner_radius=7,  border_width=1, border_color="gray50", width=300, placeholder_text='Password')
 
@@ -31,12 +36,15 @@ class LoginUI:
 
     def place_widgets(self):
         # Place the widgets on the window
+        self.close_button.place(x=50, y=0)
+        self.settings_button.place(x=300, y=0)
 
-        self.entry_email.place(x=50, y=29)
-        self.entry_password.place(x=50, y=86)
 
-        self.remember_me.place(x=50, y=143)
-        self.submit_button.place(x=210, y=143)
+        self.entry_email.place(x=50, y=54)
+        self.entry_password.place(x=50, y=111)
+
+        self.remember_me.place(x=50, y=168)
+        self.submit_button.place(x=210, y=169)
 
     def show_retry_messagebox(self):
         response = messagebox.askretrycancel("Try again", "Incorrect Email/Password")
