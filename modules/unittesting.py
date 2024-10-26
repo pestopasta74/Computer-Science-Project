@@ -1,6 +1,7 @@
 import unittest
 import modules.data_validation as dv
 import modules.user_management as um
+import modules.quiz_simulator as qs
 
 class TestValidator(unittest.TestCase):
     def setUp(self):
@@ -156,6 +157,45 @@ class TestValidator(unittest.TestCase):
         for birthdate in invalid_birthdates:
             self.assertFalse(self.validator.birthdate(birthdate))
 
+
+class TestQuizSimulator(unittest.TestCase):
+    def setUp(self):
+        # Create an instance of the QuizSimulator class to test the quiz simulator
+        self.quiz_simulator = qs.QuizSimulator()
+
+    def test_gravity_question(self):
+        # Test the generate_gravity_question method
+        question, answer = self.quiz_simulator.generate_gravity_question()
+        self.assertTrue(isinstance(question, str))
+        self.assertTrue(isinstance(answer, float))
+
+    def test_orbital_velocity_question(self):
+        # Test the generate_orbital_velocity_question method
+        question, answer = self.quiz_simulator.generate_orbital_velocity_question()
+        self.assertTrue(isinstance(question, str))
+        self.assertTrue(isinstance(answer, float))
+
+    def test_escape_velocity_question(self):
+        # Test the generate_escape_velocity_question method
+        question, answer = self.quiz_simulator.generate_escape_velocity_question()
+        self.assertTrue(isinstance(question, str))
+        self.assertTrue(isinstance(answer, float))
+
+    def test_gravitational_field_strength_question(self):
+        # Test the generate_gravitational_field_strength_question method
+        question, answer = self.quiz_simulator.generate_gravitational_field_strength_question()
+        self.assertTrue(isinstance(question, str))
+        self.assertTrue(isinstance(answer, float))
+
+    def test_generate_question(self):
+        # Test the generate_question method
+        question, answer = self.quiz_simulator.generate_question()
+        self.assertTrue(isinstance(question, str))
+        self.assertTrue(isinstance(answer, float))
+
+    def test_start_quiz(self):
+        # Test the start_quiz method
+        self.assertIsNone(self.quiz_simulator.start_quiz())
 
 if __name__ == '__main__':
     unittest.main()
