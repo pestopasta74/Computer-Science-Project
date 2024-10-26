@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import sqlite3
 import datetime
+import math
 
 # Initialize Pygame
 pygame.init()
@@ -68,16 +69,42 @@ class Body:
         self.mass = mass
         self.start_x = start_x
         self.start_y = start_y
-        self.start_vx = start_vx
-        self.start_vy = start_vy
         self.description = description
         self.colour = colour
         self.image_path = image_path
+        self.orbital_radius = self.start_x
+        # Calculate initial velocity for circular orbit
+        self.start_vx = 0  # Velocity in x direction (set to 0 for simplicity)
+        self.start_vy = (G * 1.989 * 10 ** 30 / (self.start_x)) ** 0.5  if self.start_x else 0  # v = sqrt(G*M/r)
+
         self.frame_of_reference = False
         self.reset_x = start_x
         self.reset_y = start_y
-        self.reset_vx = start_vx
-        self.reset_vy = start_vy
+        self.reset_vx = self.start_vx
+        self.reset_vy = self.start_vy
+    def update(self, bodies, time_step=time_step):
+        # Only consider the sun for gravitational force
+        sun = next(body for body in bodies if body.name == "Sun")
+
+        dx = sun.start_x - self.start_x
+        dy = sun.start_y - self.start_y
+        distance = (dx**2 + dy**2)**0.5
+        if distance == 0:
+            return
+
+        force = G * self.mass * sun.mass / distance**2
+        theta = math.atan2(dy, dx)
+        fx = math.cos(theta) * force
+        fy = math.sin(theta) * force
+
+        # Update velocity (v = u + at)
+        self.start_vx += fx / self.mass * time_step
+        self.start_vy += fy / self.mass * time_step
+
+        # Update position (s = s + vt)
+        self.start_x += self.start_vx * time_step
+        self.start_y += self.start_vy * time_step
+
 
     def draw(self, frame_of_reference):
         # Shrink planet sizes so they don’t overlap as much
@@ -94,47 +121,8 @@ class Body:
         name_surface = font.render(self.name, True, Colours.white)
         window.blit(name_surface, (x + r + 2, y - r))  # Position the name next to the planet
 
-    def update(self, all_bodies: list, time_step=time_step):
-        # Reset forces to 0
-        force_x = 0
-        force_y = 0
-
-        for body in all_bodies:
-            if body.name != self.name:
-                dx = body.start_x - self.start_x
-                dy = body.start_y - self.start_y
-                distance_squared = dx**2 + dy**2
-                distance = distance_squared ** 0.5
-
-                if distance == 0:
-                    continue  # Avoid division by zero
-
-                # Calculate the force due to gravity (F = GMm/r^2)
-                force = G * self.mass * body.mass / distance_squared
-
-                # Break down the force into components
-                force_x += force * (dx / distance)
-                force_y += force * (dy / distance)
-
-        # Calculate acceleration (F = ma -> a = F/m)
-        acceleration_x = force_x / self.mass
-        acceleration_y = force_y / self.mass
-
-        # Update velocity (v = u + at)
-        self.start_vx += acceleration_x * time_step
-        self.start_vy += acceleration_y * time_step
-
-        # Update position (s = s + v * t)
-        self.start_x += self.start_vx * time_step
-        self.start_y += self.start_vy * time_step
-
-    def draw_orbit(self, frame_of_reference):
-        # Calculate the position based on the frame of reference
-        x = int((self.start_x - frame_of_reference.start_x) / scale_factor) + width // 2
-        y = int((self.start_y - frame_of_reference.start_y) / scale_factor) + height // 2
-
-        # Draw orbit
-        pygame.draw.circle(window, self.colour, (x, y), int(self.radius / scale_factor), 1)
+        # Draw circular orbit around the sun. It should be constant, as the orbit will never change
+        pygame.draw.circle(window, self.colour, (width // 2, height // 2), int(self.orbital_radius / scale_factor), 2)
 
     def reset(self):
         self.start_x = self.reset_x
@@ -156,6 +144,8 @@ class Simulator:
         self.buttons = [
             Button("Settings", 20, 20, "icons/settings.svg", open_settings),
             Button("Restart", 100, 20, "icons/restart.svg", self.restart),
+            Button("Zoom out", 180, 20, "icons/zoom_out.svg", self.zoom_out),
+            Button("Zoom in", 220, 20, "icons/zoom_in.svg", self.zoom_in),
             Button("Slow Down", middle - 80, 20, "icons/slow_down.svg", self.lower_speed),
             Button("Play", middle, 20, f"icons/pause.svg", self.toggle_running),
             Button("Speed Up", middle + 80, 20, "icons/speed_up.svg", self.increase_speed),
@@ -167,27 +157,35 @@ class Simulator:
             1: { "step": 1, "name": "1 frame = 1 minute" },
             2: { "step": 60 * 60, "name": "1 frame = 1 hour" },
             3: { "step": 60 * 60 * 24, "name": "1 frame = 1 day" },
-            4: { "step": 60 * 60 * 24 * 7, "name": "1 frame = 1 week" },
+            4: { "step": 60 * 60 * 24 * 7, "name": "1 frame = 1 week" }
         }
 
     def toggle_running(self):
         self.paused = not self.paused
         # Update the play/pause button icon
         if self.paused:
-            self.buttons[3].icon = pygame.image.load(f"icons/play.svg").convert_alpha()
+            self.buttons[5].icon = pygame.image.load(f"icons/play.svg").convert_alpha()
         else:
-            self.buttons[3].icon = pygame.image.load(f"icons/pause.svg").convert_alpha()
+            self.buttons[5].icon = pygame.image.load(f"icons/pause.svg").convert_alpha()
 
     def lower_speed(self):
         self.speed = max(0, self.speed - 1)
 
     def increase_speed(self):
-        self.speed = min(4, self.speed + 1)
+        self.speed = min(len(self.speeds) - 1, self.speed + 1)
 
     def restart(self):
         for body in self.bodies:
             body.reset()
         self.time = 0
+
+    def zoom_out(self):
+        global scale_factor
+        scale_factor *= 1.1
+
+    def zoom_in(self):
+        global scale_factor
+        scale_factor /= 1.1
 
     @property
     def date(self):
@@ -211,14 +209,6 @@ class Simulator:
                     frame_of_reference = body
                     break
 
-            # Draw buttons
-            for button in self.buttons:
-                button.draw(window)
-
-            # Draw orbits
-            for body in self.bodies:
-                body.draw_orbit(frame_of_reference)
-
             # Add a text display for the current date
             large_font = pygame.font.SysFont('Arial', 24)  # Larger font for the date
             date_surface = large_font.render(f"{self.date.strftime('%d/%m/%Y at %H:%M:%S')}", True, Colours.white)
@@ -232,6 +222,10 @@ class Simulator:
                 if not self.paused:
                     body.update(bodies_copy, self.speeds[self.speed]["step"])
                 body.draw(frame_of_reference)
+
+            # Draw buttons
+            for button in self.buttons:
+                button.draw(window)
 
             pygame.display.flip()  # Update the display
             self.clock.tick(60)  # Run at 60 FPS
