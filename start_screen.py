@@ -1,12 +1,11 @@
 import customtkinter as ctk
-import simulation as sim
 
 class StartScreen(ctk.CTk):
     def __init__(self):
         super().__init__()
 
         self.title("Solar System Simulator")
-        self.geometry("800x600")
+        self.geometry("350x300")
 
         self.create_widgets()
 
@@ -14,17 +13,17 @@ class StartScreen(ctk.CTk):
         self.label = ctk.CTkLabel(self, text="Solar System Simulator", font=("Arial", 24))
         self.label.pack(pady=20)
 
-        self.start_button = ctk.CTkButton(self, text="Start Simulator", command=self.start_simulation)
+        self.start_button = ctk.CTkButton(self, text="Start Simulator")
         self.start_button.pack(pady=10)
 
-        self.stop_button = ctk.CTkButton(self, text="Stop Simulation", command=self.stop_simulation)
-        self.stop_button.pack(pady=10)
+        self.quiz_button = ctk.CTkButton(self, text="Take Quiz")
+        self.quiz_button.pack(pady=10)
+
+        self.sandbox_button = ctk.CTkButton(self, text="Sandbox Mode")
+        self.sandbox_button.pack(pady=10)
 
         self.quit_button = ctk.CTkButton(self, text="Quit", command=self.quit)
         self.quit_button.pack(pady=10)
-
-    def start_simulation(self):
-        sim.main()
 
 
 if __name__ == "__main__":

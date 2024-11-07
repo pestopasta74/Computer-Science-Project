@@ -43,8 +43,7 @@ class Settings(ctk.CTk):
             ctk.set_appearance_mode(choice)  # Apply color mode
 
         color_var = ctk.StringVar(value=self.color_mode)
-        color_menu = ctk.CTkOptionMenu(self, values=["Light", "Dark", "System"],
-                                       command=color_mode_callback, variable=color_var)
+        color_menu = ctk.CTkOptionMenu(self, values=["Light", "Dark", "System"], command=color_mode_callback, variable=color_var)
         color_menu.pack(pady=20)
 
         # Save button
