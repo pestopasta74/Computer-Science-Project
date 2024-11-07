@@ -1,11 +1,16 @@
 import customtkinter as ctk
+from settings import Settings
 
 class StartScreen(ctk.CTk):
     def __init__(self):
         super().__init__()
+        settings = Settings()
+        settings.load_settings()
 
         self.title("Solar System Simulator")
         self.geometry("350x300")
+
+        ctk.set_appearance_mode(settings.color_mode)
 
         self.create_widgets()
 

@@ -168,3 +168,4 @@ include/
 pyvenv.cfg
 
 user_login_info.txt
+settings.json
