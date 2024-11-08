@@ -1,21 +1,24 @@
 import customtkinter as ctk
 from settings import Settings
 
+settings = Settings()
+settings.load_settings()
+
 class StartScreen(ctk.CTk):
     def __init__(self):
         super().__init__()
-        settings = Settings()
-        settings.load_settings()
+
 
         self.title("Solar System Simulator")
         self.geometry("350x300")
 
         ctk.set_appearance_mode(settings.color_mode)
+        ctk.set_default_color_theme(settings.colour_palette)
 
         self.create_widgets()
 
     def create_widgets(self):
-        self.label = ctk.CTkLabel(self, text="Solar System Simulator", font=("Arial", 24))
+        self.label = ctk.CTkLabel(self, text="Solar System Simulator", font=(settings.font, 24))
         self.label.pack(pady=20)
 
         self.start_button = ctk.CTkButton(self, text="Start Simulator")
