@@ -14,6 +14,15 @@ class Settings:
         self.volume = 50
         self.icon_size = 24
 
+        self.colour_palletes = {
+            "Blue": "Blue",
+            "Green": "custom-tkinter-themes/green.json",
+            "Orange": "custom-tkinter-themes/orange.json",
+            "Pink": "custom-tkinter-themes/pink.json",
+            "Purple": "custom-tkinter-themes/purple.json",
+            "Red": "custom-tkinter-themes/red.json",
+            "Yellow": "custom-tkinter-themes/yellow.json",
+        }
         # Load settings from file
         self.load_settings()
 
@@ -82,9 +91,10 @@ class SettingsUI(ctk.CTk, Settings):
         # Colour palette selection dropdown
         colour_var = ctk.StringVar(value=self.colour_palette)
         colour_menu = ctk.CTkOptionMenu(
-            self, values=["Blue", "Green", "Red", "Purple", "Orange", "Yellow"],
-            variable=colour_var
+            self, values=list(self.colour_palletes.keys()),
+            command=self.change_colour_palette, variable=colour_var
         )
+        colour_menu.pack(pady=20)
 
         # Save button
         save_button = ctk.CTkButton(self, text="Save", command=self.save_and_refresh)
@@ -98,6 +108,11 @@ class SettingsUI(ctk.CTk, Settings):
         print("Color mode changed to:", choice)
         self.color_mode = choice
         ctk.set_appearance_mode(choice)
+
+    def change_colour_palette(self, choice):
+        print("Colour palette changed to:", choice)
+        self.colour_palette = self.colour_palletes[choice]
+
 
     def save_and_refresh(self):
         """Save settings and refresh the UI to reflect changes."""
