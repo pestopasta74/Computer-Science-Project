@@ -10,18 +10,19 @@ class Settings:
         self.font = "Arial"
         self.font_size = 12
         self.color_mode = "Light"
-        self.colour_palette = "Blue" # Default colour palette that comes with custom tkinter
+        self.colour_palette = {"name": "Blue", "path": "blue"}  # Default palette with name and path
         self.volume = 50
         self.icon_size = 24
 
         self.colour_palletes = {
-            "Blue": "Blue",
+            "Blue": "blue", # Default palette
             "Green": "custom-tkinter-themes/green.json",
             "Orange": "custom-tkinter-themes/orange.json",
             "Pink": "custom-tkinter-themes/pink.json",
             "Purple": "custom-tkinter-themes/purple.json",
             "Red": "custom-tkinter-themes/red.json",
             "Yellow": "custom-tkinter-themes/yellow.json",
+            "High Contrast": "custom-tkinter-themes/high_contrast.json",
         }
         # Load settings from file
         self.load_settings()
@@ -35,7 +36,12 @@ class Settings:
                     self.font = settings.get("Font", self.font)
                     self.font_size = settings.get("Font size", self.font_size)
                     self.color_mode = settings.get("Color mode", self.color_mode)
-                    self.colour_palette = settings.get("Colour palette", self.colour_palette)
+                    # Ensure colour_palette loads as a dictionary with 'name' and 'path'
+                    colour_palette = settings.get("Colour palette", self.colour_palette)
+                    if isinstance(colour_palette, str):
+                        # Backward compatibility: convert to dictionary if stored as a string
+                        colour_palette = {"name": colour_palette, "path": self.colour_palletes.get(colour_palette, "Blue")}
+                    self.colour_palette = colour_palette
                     self.volume = settings.get("Volume", self.volume)
                     self.icon_size = settings.get("Icon size", self.icon_size)
             except (json.JSONDecodeError, IOError):
@@ -65,10 +71,15 @@ class SettingsUI(ctk.CTk, Settings):
         # Apply initial color mode
         ctk.set_appearance_mode(self.color_mode)
 
+        # Apply initial colour pallete
+        ctk.set_default_color_theme(self.colour_palette["path"])
+
         # Create UI elements
         self.create_widgets()
 
     def create_widgets(self):
+        ctk.set_default_color_theme(self.colour_palette["path"]) # Apply colour palette for when refreshing
+
         # Title label
         ctk.CTkLabel(self, text="Settings", font=(self.font, int(2 * self.font_size))).pack(pady=20)
 
@@ -89,7 +100,7 @@ class SettingsUI(ctk.CTk, Settings):
         view_mode_menu.pack(pady=20)
 
         # Colour palette selection dropdown
-        colour_var = ctk.StringVar(value=self.colour_palette)
+        colour_var = ctk.StringVar(value=self.colour_palette["name"])
         colour_menu = ctk.CTkOptionMenu(
             self, values=list(self.colour_palletes.keys()),
             command=self.change_colour_palette, variable=colour_var
@@ -99,6 +110,10 @@ class SettingsUI(ctk.CTk, Settings):
         # Save button
         save_button = ctk.CTkButton(self, text="Save", command=self.save_and_refresh)
         save_button.pack(pady=20)
+
+        # Log out Button (also quits app)
+        log_out_button = ctk.CTkButton(self, text="Log Out", command=self.logoout)
+        log_out_button.pack(pady=20)
 
     def change_font(self, choice):
         print("Font changed to:", choice)
@@ -111,8 +126,7 @@ class SettingsUI(ctk.CTk, Settings):
 
     def change_colour_palette(self, choice):
         print("Colour palette changed to:", choice)
-        self.colour_palette = self.colour_palletes[choice]
-
+        self.colour_palette = {"name": choice, "path": self.colour_palletes[choice]}
 
     def save_and_refresh(self):
         """Save settings and refresh the UI to reflect changes."""
@@ -124,6 +138,13 @@ class SettingsUI(ctk.CTk, Settings):
         for widget in self.winfo_children():
             widget.destroy()
         self.create_widgets()
+
+    def logoout(self):
+        try:
+            os.remove("user_login_info.txt")
+        except FileNotFoundError:
+            pass
+        self.quit()
 
 if __name__ == "__main__":
     settings_app = SettingsUI()
