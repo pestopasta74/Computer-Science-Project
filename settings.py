@@ -9,13 +9,14 @@ class Settings:
         # Default settings
         self.font = "Arial"
         self.font_size = 12
+        self.font_bold = False  # New attribute for bold font
         self.color_mode = "Light"
         self.colour_palette = {"name": "Blue", "path": "blue"}  # Default palette with name and path
-        self.volume = 50
+        self.volume = 50  # Volume default value
         self.icon_size = 24
 
         self.colour_palletes = {
-            "Blue": "blue", # Default palette
+            "Blue": "blue",  # Default palette
             "Green": "custom-tkinter-themes/green.json",
             "Orange": "custom-tkinter-themes/orange.json",
             "Pink": "custom-tkinter-themes/pink.json",
@@ -35,14 +36,13 @@ class Settings:
                     settings = json.load(file)
                     self.font = settings.get("Font", self.font)
                     self.font_size = settings.get("Font size", self.font_size)
+                    self.font_bold = settings.get("Font bold", self.font_bold)  # Load bold setting
                     self.color_mode = settings.get("Color mode", self.color_mode)
-                    # Ensure colour_palette loads as a dictionary with 'name' and 'path'
                     colour_palette = settings.get("Colour palette", self.colour_palette)
                     if isinstance(colour_palette, str):
-                        # Backward compatibility: convert to dictionary if stored as a string
                         colour_palette = {"name": colour_palette, "path": self.colour_palletes.get(colour_palette, "Blue")}
                     self.colour_palette = colour_palette
-                    self.volume = settings.get("Volume", self.volume)
+                    self.volume = settings.get("Volume", self.volume)  # Load volume setting
                     self.icon_size = settings.get("Icon size", self.icon_size)
             except (json.JSONDecodeError, IOError):
                 print("Error loading settings. Using defaults.")
@@ -52,9 +52,10 @@ class Settings:
         settings = {
             "Font": self.font,
             "Font size": self.font_size,
+            "Font bold": self.font_bold,  # Save bold setting
             "Color mode": self.color_mode,
             "Colour palette": self.colour_palette,
-            "Volume": self.volume,
+            "Volume": self.volume,  # Save volume setting
             "Icon size": self.icon_size
         }
         with open(self.SETTINGS_FILE, "w") as file:
@@ -71,17 +72,20 @@ class SettingsUI(ctk.CTk, Settings):
         # Apply initial color mode
         ctk.set_appearance_mode(self.color_mode)
 
-        # Apply initial colour pallete
+        # Apply initial colour palette
         ctk.set_default_color_theme(self.colour_palette["path"])
+
+        # Set font weight based on bold setting
+        self.font_weight = "bold" if self.font_bold else "normal"
 
         # Create UI elements
         self.create_widgets()
 
     def create_widgets(self):
-        ctk.set_default_color_theme(self.colour_palette["path"]) # Apply colour palette for when refreshing
+        ctk.set_default_color_theme(self.colour_palette["path"])  # Apply colour palette for when refreshing
 
-        # Title label
-        ctk.CTkLabel(self, text="Settings", font=(self.font, int(2 * self.font_size))).pack(pady=20)
+        # Title label with bold handling
+        ctk.CTkLabel(self, text="Settings", font=(self.font, int(2 * self.font_size), self.font_weight)).pack(pady=20)
 
         # Font selection dropdown
         font_var = ctk.StringVar(value=self.font)
@@ -107,6 +111,20 @@ class SettingsUI(ctk.CTk, Settings):
         )
         colour_menu.pack(pady=20)
 
+        # Bold font checkbox
+        bold_var = ctk.BooleanVar(value=self.font_bold)
+        bold_check = ctk.CTkCheckBox(self, text="Bold", variable=bold_var, command=self.change_font_weight)
+        bold_check.pack(pady=20)
+
+        # Volume slider
+        volume_slider = ctk.CTkSlider(
+            self, from_=0, to=100, number_of_steps=100,
+            command=self.change_volume, variable=ctk.DoubleVar(value=self.volume)
+        )
+        volume_slider_label = ctk.CTkLabel(self, text="Volume")
+        volume_slider_label.pack(pady=10)
+        volume_slider.pack(pady=10)
+
         # Save button
         save_button = ctk.CTkButton(self, text="Save", command=self.save_and_refresh)
         save_button.pack(pady=20)
@@ -122,11 +140,20 @@ class SettingsUI(ctk.CTk, Settings):
     def change_color_mode(self, choice):
         print("Color mode changed to:", choice)
         self.color_mode = choice
-        ctk.set_appearance_mode(choice)
 
     def change_colour_palette(self, choice):
         print("Colour palette changed to:", choice)
         self.colour_palette = {"name": choice, "path": self.colour_palletes[choice]}
+
+    def change_font_weight(self):
+        bold = not self.font_bold
+        print("Font weight changed to:", bold)
+        self.font_bold = bold
+        self.font_weight = "bold" if bold else "normal"
+
+    def change_volume(self, volume):
+        print("Volume set to:", int(volume))
+        self.volume = int(volume)
 
     def save_and_refresh(self):
         """Save settings and refresh the UI to reflect changes."""
@@ -137,6 +164,7 @@ class SettingsUI(ctk.CTk, Settings):
         """Refresh the UI elements without reinitializing the entire window."""
         for widget in self.winfo_children():
             widget.destroy()
+        ctk.set_appearance_mode(self.color_mode)
         self.create_widgets()
 
     def logoout(self):
