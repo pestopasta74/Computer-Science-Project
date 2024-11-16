@@ -140,6 +140,7 @@ class SettingsUI(ctk.CTk, Settings):
         self.create_widgets()
 
     def logoout(self):
+        """Log out the user and quit the application."""
         try:
             os.remove("user_login_info.txt")
         except FileNotFoundError:

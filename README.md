@@ -8,6 +8,7 @@ This is a project for OCR Computer Science (The NEA portion), and this repositor
 - tkinter library (usually comes with python)
 - customtkinter library
 - bcrypt library
+- pillow library
 
 ## Installation
 
