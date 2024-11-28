@@ -1,0 +1,56 @@
+{
+    "date": "2024-11-28T15:30:14.018635",
+    "score": 2,
+    "total_questions": 10,
+    "score_percentage": 20.0,
+    "wrong_questions": [
+        {
+            "question": "What is the escape velocity from a mass of 2.25 x 10^31 kg at a distance of 6.01 x 10^9 meters?",
+            "correct_answer": "7.07 x 10^5",
+            "user_answer": "5.60 x 10^1",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the escape velocity from a mass of 9.37 x 10^31 kg at a distance of 5.91 x 10^9 meters?",
+            "correct_answer": "1.46 x 10^6",
+            "user_answer": "3.40 x 10^1",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 9.90 x 10^24 kg and 3.04 x 10^24 kg separated by 7.09 x 10^8 meters?",
+            "correct_answer": "4.01 x 10^21",
+            "user_answer": "4.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the orbital velocity of a body in orbit around a mass of 3.60 x 10^31 kg at a distance of 7.58 x 10^9 meters?",
+            "correct_answer": "5.63 x 10^5",
+            "user_answer": "2.30 x 10^1",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the escape velocity from Saturn (5.82 x 10^4 kg) at a distance of 5.68 x 10^26 meters?",
+            "correct_answer": "1.17 x 10^-16",
+            "user_answer": "6.70 x 10^1",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the gravitational force between the Sun (1.99 x 10^30 kg) and Mercury (2.44 x 10^3 kg)?",
+            "correct_answer": "2.97 x 10^-24",
+            "user_answer": "6.58 x 10^2",
+            "units": "N"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 4.74 x 10^24 kg and 5.09 x 10^24 kg separated by 5.98 x 10^8 meters?",
+            "correct_answer": "4.50 x 10^21",
+            "user_answer": "3.40 x 10^1",
+            "units": "N"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 2.66 x 10^23 kg and 1.71 x 10^24 kg separated by 6.42 x 10^8 meters?",
+            "correct_answer": "7.36 x 10^19",
+            "user_answer": "4.50 x 10^1",
+            "units": "N"
+        }
+    ]
+}
