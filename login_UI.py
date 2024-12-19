@@ -2,11 +2,11 @@ import customtkinter as ctk
 from tkinter import messagebox
 from modules.data_validation import DataValidator
 from modules.user_management import UserDatabase
-from settings import Settings
+from settings import SettingsManager
 from PIL import Image
 
 # Load settings
-settings = Settings()
+settings = SettingsManager()
 settings.load_settings()
 
 class LoginUI(ctk.CTk):
@@ -19,7 +19,7 @@ class LoginUI(ctk.CTk):
         self.resizable(False, False)
 
         # Set appearance and theme
-        ctk.set_appearance_mode(settings.color_mode)
+        ctk.set_appearance_mode(settings.Colour_mode)
         ctk.set_default_color_theme(settings.colour_palette["path"])
 
         # Initialize components

@@ -13,7 +13,7 @@ class UserDatabase:
                             (id INTEGER PRIMARY KEY AUTOINCREMENT,
                             email TEXT NOT NULL UNIQUE,
                             password TEXT NOT NULL,
-                            is_admin BOOL NOR NULL);''')
+                            is_teacher BOOL NOR NULL);''')
         self.conn.commit()
 
     def add_user(self, email, password, is_admin=False):
@@ -42,7 +42,7 @@ class UserDatabase:
 
 def main():
     db = UserDatabase()
-    db.add_user('john@hotmail.com', 'password123', is_admin=True)
+    db.add_user('john@hotmail.com', 'password123', is_teacher=True)
 
 if __name__ == '__main__':
     main()
