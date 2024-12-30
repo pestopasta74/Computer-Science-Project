@@ -11,10 +11,10 @@ class SettingsManager:
     def __init__(self):
         self.default_settings = {
             "Font": "Arial",
-            "Font_size": 12,
-            "Font_bold": False,
-            "Colour_mode": "System",
-            "Colour_palette": {
+            "Font size": 12,
+            "Font bold": False,
+            "Color mode": "System",
+            "Colour palette": {
                 "name": "Blue",
                 "path": "blue"
             },
@@ -45,13 +45,14 @@ class SettingsManager:
             return None
 
 class SettingsUI(ctk.CTk):
-    def __init__(self):
+    def __init__(self, came_from):
         super().__init__()
 
         # Window configuration
         self.title("Application Settings")
         self.geometry("500x700")
         self.resizable(False, False)
+        self.came_from = came_from # Store the previous window
 
         # Initialize settings manager
         self.settings_manager = SettingsManager()
@@ -81,8 +82,8 @@ class SettingsUI(ctk.CTk):
         settings = self.settings_manager.load_settings()
 
         # Set appearance based on current settings
-        ctk.set_appearance_mode(settings["Colour_mode"].lower())
-        palette = settings["Colour_palette"]
+        ctk.set_appearance_mode(settings["Color mode"].lower())
+        palette = settings["Colour palette"]
         ctk.set_default_color_theme(palette["path"])
 
         # Main scrollable frame
@@ -93,7 +94,7 @@ class SettingsUI(ctk.CTk):
         ctk.CTkLabel(
             main_frame,
             text="⚙️ Application Settings",
-            font=(settings["Font"], 24, "bold" if settings["Font_bold"] else "normal")
+            font=(settings["Font"], 24, "bold" if settings["Font bold"] else "normal")
         ).pack(pady=(0, 20))
 
         # Font Settings
@@ -112,7 +113,7 @@ class SettingsUI(ctk.CTk):
         font_menu.pack(pady=10)
 
         # Bold Font Checkbox
-        self.bold_var = ctk.BooleanVar(value=settings["Font_bold"])
+        self.bold_var = ctk.BooleanVar(value=settings["Font bold"])
         bold_check = ctk.CTkCheckBox(
             font_frame,
             text="Bold Font",
@@ -124,20 +125,20 @@ class SettingsUI(ctk.CTk):
         # Appearance Settings
         appearance_frame = self._create_section(main_frame, "🎨 Appearance")
 
-        # Colour_mode Dropdown
-        Colour_modes = ["Light", "Dark", "System"]
-        self.Colour_mode_var = ctk.StringVar(value=settings["Colour_mode"])
-        ctk.CTkLabel(appearance_frame, text="Colour_mode").pack(anchor="w")
-        Colour_mode_menu = ctk.CTkOptionMenu(
+        # Color Mode Dropdown
+        color_modes = ["Light", "Dark", "System"]
+        self.color_mode_var = ctk.StringVar(value=settings["Color mode"])
+        ctk.CTkLabel(appearance_frame, text="Color Mode").pack(anchor="w")
+        color_mode_menu = ctk.CTkOptionMenu(
             appearance_frame,
-            values=Colour_modes,
-            variable=self.Colour_mode_var,
+            values=color_modes,
+            variable=self.color_mode_var,
             width=300
         )
-        Colour_mode_menu.pack(pady=10)
+        color_mode_menu.pack(pady=10)
 
         # Color Theme Dropdown
-        self.color_theme_var = ctk.StringVar(value=settings["Colour_palette"]["name"])
+        self.color_theme_var = ctk.StringVar(value=settings["Colour palette"]["name"])
         ctk.CTkLabel(appearance_frame, text="Color Theme").pack(anchor="w")
         color_theme_menu = ctk.CTkOptionMenu(
             appearance_frame,
@@ -152,11 +153,11 @@ class SettingsUI(ctk.CTk):
 
         # Volume Slider
         self.volume_var = ctk.DoubleVar(value=settings["Volume"])
-        volume_label = ctk.CTkLabel(
+        self.volume_label = ctk.CTkLabel(
             sound_frame,
             text=f"Volume: {int(settings['Volume'])}%"
         )
-        volume_label.pack(anchor="w")
+        self.volume_label.pack(anchor="w")
 
         volume_slider = ctk.CTkSlider(
             sound_frame,
@@ -168,7 +169,7 @@ class SettingsUI(ctk.CTk):
         )
         volume_slider.pack(pady=10)
         volume_slider.configure(
-            command=lambda value: volume_label.configure(
+            command=lambda value: self.volume_label.configure(
                 text=f"Volume: {int(value)}%"
             )
         )
@@ -184,12 +185,12 @@ class SettingsUI(ctk.CTk):
 
         # Status Label
         self.status_var = ctk.StringVar()
-        status_label = ctk.CTkLabel(
+        self.status_label = ctk.CTkLabel(
             main_frame,
             textvariable=self.status_var,
             text_color="green"
         )
-        status_label.pack(pady=10)
+        self.status_label.pack(pady=10)
 
     def _create_section(self, parent, title):
         """Create a styled section header and frame."""
@@ -208,10 +209,10 @@ class SettingsUI(ctk.CTk):
         """Compile and save current settings."""
         updated_settings = {
             "Font": self.font_var.get(),
-            "Font_size": 12,  # Keeping original value
-            "Font_bold": self.bold_var.get(),
-            "Colour_mode": self.Colour_mode_var.get(),
-            "Colour_palette": {
+            "Font size": 12,  # Keeping original value
+            "Font bold": self.bold_var.get(),
+            "Color mode": self.color_mode_var.get(),
+            "Colour palette": {
                 "name": self.color_theme_var.get(),
                 "path": self.colour_palettes[self.color_theme_var.get()]
             },
@@ -233,6 +234,13 @@ class SettingsUI(ctk.CTk):
             # Show error message
             self.status_var.set("❌ Failed to save settings")
             self.after(2000, lambda: self.status_var.set(""))
+
+    def quit_application(self):
+        """Close the application and re-open previous window"""
+        self.came_from.deiconify()
+        self.destroy()
+
+
 
 def main():
     """Application entry point."""

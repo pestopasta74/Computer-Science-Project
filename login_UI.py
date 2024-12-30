@@ -5,9 +5,9 @@ from modules.user_management import UserDatabase
 from settings import SettingsManager
 from PIL import Image
 
-# Load settings
-settings = SettingsManager()
-settings.load_settings()
+# Initialize settings
+settings_manager = SettingsManager()
+settings = settings_manager.settings
 
 class LoginUI(ctk.CTk):
     def __init__(self):
@@ -15,12 +15,12 @@ class LoginUI(ctk.CTk):
 
         # Configure window
         self.title("Login")
-        self.geometry("500x600")  # Increased size for better spacing
+        self.geometry("500x600")
         self.resizable(False, False)
 
         # Set appearance and theme
-        ctk.set_appearance_mode(settings.Colour_mode)
-        ctk.set_default_color_theme(settings.colour_palette["path"])
+        ctk.set_appearance_mode(settings["Color mode"])
+        ctk.set_default_color_theme(settings["Colour palette"]["path"])
 
         # Initialize components
         self.validator = DataValidator()
@@ -111,7 +111,7 @@ class LoginUI(ctk.CTk):
         self.title_label = ctk.CTkLabel(
             self.main_frame,
             text="Welcome Back",
-            font=(settings.font, 32, "bold")
+            font=(settings["Font"], 32, "bold")
         )
         self.title_label.pack(pady=(20, 40))
 
@@ -129,7 +129,7 @@ class LoginUI(ctk.CTk):
             height=45,
             corner_radius=8,
             border_width=2,
-            font=(settings.font, 14),
+            font=(settings["Font"], 14),
             width=300
         )
         self.entry_email.pack(fill="x", pady=(0, 20))
@@ -141,7 +141,7 @@ class LoginUI(ctk.CTk):
             height=45,
             corner_radius=8,
             border_width=2,
-            font=(settings.font, 14),
+            font=(settings["Font"], 14),
             width=300,
             show="•"
         )
@@ -157,7 +157,7 @@ class LoginUI(ctk.CTk):
         self.remember_me = ctk.CTkCheckBox(
             self.options_frame,
             text="Remember me",
-            font=(settings.font, 12),
+            font=(settings["Font"], 12),
             corner_radius=6,
             border_width=2,
             checkbox_height=20,
@@ -172,7 +172,7 @@ class LoginUI(ctk.CTk):
             command=self.validate_credentials,
             height=45,
             corner_radius=8,
-            font=(settings.font, 14, "bold"),
+            font=(settings["Font"], 14, "bold"),
             fg_color=("blue", "blue"),
             hover_color=("dark blue", "dark blue")
         )
@@ -221,8 +221,10 @@ class LoginUI(ctk.CTk):
         self.destroy()
 
     def open_settings(self):
-        """Open settings (placeholder function)."""
-        pass
+        """Open the settings window."""
+        self.withdraw()  # Hide the login window
+        settings_ui = settings_manager.SettingsUI(came_from=self)
+        settings_ui.mainloop()
 
 if __name__ == "__main__":
     app = LoginUI()
