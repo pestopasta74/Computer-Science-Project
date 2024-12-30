@@ -45,12 +45,12 @@ class SettingsManager:
             return None
 
 class SettingsUI(ctk.CTk):
-    def __init__(self, came_from):
+    def __init__(self, came_from=None):
         super().__init__()
 
         # Window configuration
         self.title("Application Settings")
-        self.geometry("500x700")
+        self.geometry("500x600")
         self.resizable(False, False)
         self.came_from = came_from # Store the previous window
 
@@ -89,6 +89,27 @@ class SettingsUI(ctk.CTk):
         # Main scrollable frame
         main_frame = ctk.CTkScrollableFrame(self, width=460, height=600)
         main_frame.pack(padx=20, pady=20)
+
+        # Back button
+        back_button = ctk.CTkButton(
+            main_frame,
+            text="🔙 Back",
+            command=self.go_back,
+            width=100,
+            fg_color="transparent",
+            hover_color=("gray85", "gray15"),
+            font=(settings["Font"], 14)
+        )
+        back_button.pack(anchor="w", pady=(10, 20))
+
+        # Status Label
+        self.status_var = ctk.StringVar()
+        self.status_label = ctk.CTkLabel(
+            main_frame,
+            textvariable=self.status_var,
+            text_color="green"
+        )
+        self.status_label.pack(pady=10)
 
         # Title
         ctk.CTkLabel(
@@ -183,14 +204,6 @@ class SettingsUI(ctk.CTk):
         )
         save_button.pack(pady=20)
 
-        # Status Label
-        self.status_var = ctk.StringVar()
-        self.status_label = ctk.CTkLabel(
-            main_frame,
-            textvariable=self.status_var,
-            text_color="green"
-        )
-        self.status_label.pack(pady=10)
 
     def _create_section(self, parent, title):
         """Create a styled section header and frame."""
@@ -204,6 +217,12 @@ class SettingsUI(ctk.CTk):
         frame.pack(fill="x", pady=(0, 15))
 
         return frame
+
+    def go_back(self):
+        """Return to the previous window."""
+        if self.came_from:
+            self.came_from.deiconify()  # Show the previous window
+        self.destroy()  # Close the settings window
 
     def save_settings(self):
         """Compile and save current settings."""
@@ -234,11 +253,6 @@ class SettingsUI(ctk.CTk):
             # Show error message
             self.status_var.set("❌ Failed to save settings")
             self.after(2000, lambda: self.status_var.set(""))
-
-    def quit_application(self):
-        """Close the application and re-open previous window"""
-        self.came_from.deiconify()
-        self.destroy()
 
 
 

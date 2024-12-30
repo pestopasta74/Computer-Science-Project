@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 from modules.data_validation import DataValidator
 from modules.user_management import UserDatabase
-from settings import SettingsManager
+from settings import SettingsManager, SettingsUI
 from PIL import Image
 
 # Initialize settings
@@ -99,9 +99,14 @@ class LoginUI(ctk.CTk):
         self.settings_button.pack(side="right")
 
         # Logo/Brand space (placeholder)
+        if settings["Colour palette"]["name"] == "Pink":
+            logo_text = "🎀"
+        else:
+            logo_text = "👤"
+
         self.logo_label = ctk.CTkLabel(
             self.main_frame,
-            text="👤",  # Unicode character as placeholder
+            text=logo_text,
             font=("Arial", 64),
             text_color=("gray60", "gray40")
         )
@@ -172,9 +177,7 @@ class LoginUI(ctk.CTk):
             command=self.validate_credentials,
             height=45,
             corner_radius=8,
-            font=(settings["Font"], 14, "bold"),
-            fg_color=("blue", "blue"),
-            hover_color=("dark blue", "dark blue")
+            font=(settings["Font"], 14, "bold")
         )
         self.submit_button.pack(fill="x", pady=(0, 20))
 
@@ -223,7 +226,7 @@ class LoginUI(ctk.CTk):
     def open_settings(self):
         """Open the settings window."""
         self.withdraw()  # Hide the login window
-        settings_ui = settings_manager.SettingsUI(came_from=self)
+        settings_ui = SettingsUI(came_from=self)
         settings_ui.mainloop()
 
 if __name__ == "__main__":
