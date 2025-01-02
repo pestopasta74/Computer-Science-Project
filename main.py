@@ -2,6 +2,9 @@ from modules.user_management import UserDatabase
 import login_UI
 import start_screen
 
+# initialise icon for the app
+logo = "icons/logo.png"
+
 # Trying to read the user login information from a file
 try:
     with open("user_login_info.txt", "r") as file:

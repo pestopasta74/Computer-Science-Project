@@ -21,6 +21,17 @@ class LoginUI(ctk.CTk):
         # Set appearance and theme
         ctk.set_appearance_mode(settings["Color mode"])
         ctk.set_default_color_theme(settings["Colour palette"]["path"])
+        self.coloured_hearts_dict = {
+            "Blue": "💙",
+            "High Contrast": "🤍",
+            "Green": "💚",
+            "Yellow": "💛",
+            "Purple": "💜",
+            "Orange": "🧡",
+            "Black": "🖤",
+            "Pink": "🩷",
+            "Red": "❤️"
+        }
 
         # Initialize components
         self.validator = DataValidator()
@@ -99,10 +110,12 @@ class LoginUI(ctk.CTk):
         self.settings_button.pack(side="right")
 
         # Logo/Brand space (placeholder)
-        if settings["Colour palette"]["name"] == "Pink":
-            logo_text = "🎀"
-        else:
-            logo_text = "👤"
+        for key, value in self.coloured_hearts_dict.items():
+            if settings["Colour palette"]["name"] == key:
+                logo_text = value
+                break
+            else:
+                logo_text = "👤" # Should never occur
 
         self.logo_label = ctk.CTkLabel(
             self.main_frame,
@@ -218,6 +231,23 @@ class LoginUI(ctk.CTk):
         self.entry_email.configure(border_color=self.entry_email.cget("fg_color"))
         self.entry_password.configure(border_color=self.entry_password.cget("fg_color"))
 
+    def refresh_settings(self):
+        """Reload settings and apply to the Login UI."""
+        settings = settings_manager.load_settings()
+
+        # Update appearance and theme
+        ctk.set_appearance_mode(settings["Color mode"])
+        ctk.set_default_color_theme(settings["Colour palette"]["path"])
+
+        # Update widgets based on settings (example: font)
+        self.title_label.configure(
+            font=(settings["Font"], 32, "bold" if settings["Font bold"] else "normal")
+        )
+        self.submit_button.configure(
+            font=(settings["Font"], 14, "bold" if settings["Font bold"] else "normal")
+        )
+
+
     def quit_application(self):
         """Close application and release resources."""
         self.verify_user.close_connection()
@@ -226,8 +256,12 @@ class LoginUI(ctk.CTk):
     def open_settings(self):
         """Open the settings window."""
         self.withdraw()  # Hide the login window
-        settings_ui = SettingsUI(came_from=self)
+        settings_ui = SettingsUI(came_from=self, settings_manager=settings_manager)
         settings_ui.mainloop()
+
+        # Refresh settings after closing settings UI
+        self.refresh_settings()
+
 
 if __name__ == "__main__":
     app = LoginUI()

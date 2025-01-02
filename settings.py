@@ -1,5 +1,4 @@
 import customtkinter as ctk
-import tkinter as tk
 import json
 import os
 import logging
@@ -23,53 +22,53 @@ class SettingsManager:
         }
         self.settings = self.load_settings()
 
-    def load_settings(self):
-        """Load settings from file or use defaults."""
+    def load_settings(self) -> Dict[str, Any]:
+        if not os.path.exists(self.SETTINGS_FILE):
+            return self.default_settings.copy()
+
         try:
             with open(self.SETTINGS_FILE, "r") as file:
                 settings = json.load(file)
-                # Merge with defaults to handle potential missing keys
-                return {**self.default_settings, **settings}
-        except (FileNotFoundError, json.JSONDecodeError):
-            logging.warning("Could not load settings. Using defaults.")
-            return self.default_settings
+                merged = self.default_settings.copy()
+                merged.update(settings)
+                return merged
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            logging.warning(f"Could not load settings: {e}")
+            return self.default_settings.copy()
 
-    def save_settings(self, updated_settings):
-        """Save settings to file."""
+    def save_settings(self, settings: Dict[str, Any]) -> Dict[str, Any]:
         try:
             with open(self.SETTINGS_FILE, "w") as file:
-                json.dump(updated_settings, file, indent=4)
-            return updated_settings
-        except IOError:
-            logging.error("Failed to save settings")
+                json.dump(settings, file, indent=4)
+            self.settings = settings
+            return settings
+        except IOError as e:
+            logging.error(f"Failed to save settings: {e}")
             return None
 
 class SettingsUI(ctk.CTk):
-    def __init__(self, came_from=None):
+    def __init__(self, came_from=None, settings_manager=None):
         super().__init__()
 
-        # Window configuration
-        self.title("Application Settings")
+        self.came_from = came_from
+        self.settings_manager = settings_manager or SettingsManager()
+
+        self.title("Settings")
         self.geometry("500x600")
         self.resizable(False, False)
-        self.came_from = came_from # Store the previous window
 
-        # Initialize settings manager
-        self.settings_manager = SettingsManager()
-
-        # Prepare color palettes
+        # Color themes with correct paths
         self.colour_palettes = {
             "Blue": "blue",
-            "Green": "custom-tkinter-themes/green.json",
+            "Green": "green",
             "Orange": "custom-tkinter-themes/orange.json",
             "Pink": "custom-tkinter-themes/pink.json",
             "Purple": "custom-tkinter-themes/purple.json",
             "Red": "custom-tkinter-themes/red.json",
             "Yellow": "custom-tkinter-themes/yellow.json",
-            "High Contrast": "custom-tkinter-themes/high_contrast.json",
+            "High Contrast": "custom-tkinter-themes/high_contrast.json"
         }
 
-        # Initial setup
         self.create_application()
 
     def create_application(self):
@@ -226,9 +225,10 @@ class SettingsUI(ctk.CTk):
 
     def save_settings(self):
         """Compile and save current settings."""
+        # Gather updated settings
         updated_settings = {
             "Font": self.font_var.get(),
-            "Font size": 12,  # Keeping original value
+            "Font size": 12,
             "Font bold": self.bold_var.get(),
             "Color mode": self.color_mode_var.get(),
             "Colour palette": {
@@ -236,23 +236,51 @@ class SettingsUI(ctk.CTk):
                 "path": self.colour_palettes[self.color_theme_var.get()]
             },
             "Volume": int(self.volume_var.get()),
-            "Icon size": 24  # Keeping original value
+            "Icon size": 24
         }
 
-        # Attempt to save settings
-        saved_settings = self.settings_manager.save_settings(updated_settings)
-
-        if saved_settings:
-            # Refresh the entire application window
-            self.create_application()
+        try:
+            # Save the settings
+            self.settings_manager.save_settings(updated_settings)
 
             # Show success message
             self.status_var.set("✅ Settings saved and applied successfully!")
-            self.after(2000, lambda: self.status_var.set(""))
-        else:
-            # Show error message
+
+            # Apply changes to parent window if it exists
+            if self.came_from and hasattr(self.came_from, 'refresh_settings'):
+                self.came_from.refresh_settings()
+
+            # Recreate the current window with new settings
+            self.after(100, self.refresh_ui)  # Small delay to ensure message shows
+
+        except Exception as e:
+            logging.error(f"Error saving settings: {e}")
             self.status_var.set("❌ Failed to save settings")
-            self.after(2000, lambda: self.status_var.set(""))
+
+        # Clear status message after a delay
+        self.after(2000, lambda: self.status_var.set(""))
+
+    def refresh_ui(self):
+        """Refresh the entire UI with new settings."""
+        # Get the current geometry before destroying widgets
+        current_geometry = self.geometry()
+
+        # Destroy all widgets
+        for widget in self.winfo_children():
+            widget.destroy()
+
+        # Load new settings
+        settings = self.settings_manager.load_settings()
+
+        # Apply new appearance settings
+        ctk.set_appearance_mode(settings["Color mode"].lower())
+        ctk.set_default_color_theme(settings["Colour palette"]["path"])
+
+        # Recreate the UI
+        self.create_application()
+
+        # Restore window geometry
+        self.geometry(current_geometry)
 
 
 
