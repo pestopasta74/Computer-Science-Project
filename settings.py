@@ -4,6 +4,7 @@ import os
 import logging
 from typing import Dict, Any
 
+
 class SettingsManager:
     SETTINGS_FILE = "settings.json"
 
@@ -46,6 +47,7 @@ class SettingsManager:
             logging.error(f"Failed to save settings: {e}")
             return None
 
+
 class SettingsUI(ctk.CTk):
     def __init__(self, came_from=None, settings_manager=None):
         super().__init__()
@@ -57,7 +59,7 @@ class SettingsUI(ctk.CTk):
         self.geometry("500x600")
         self.resizable(False, False)
 
-        # Color themes with correct paths
+        # Define color themes
         self.colour_palettes = {
             "Blue": "blue",
             "Green": "green",
@@ -72,115 +74,139 @@ class SettingsUI(ctk.CTk):
         self.create_application()
 
     def create_application(self):
-        """Create or refresh the entire application window."""
-        # Destroy existing widgets if any
+        """Create or refresh the application UI."""
+        # Clear existing widgets
         for widget in self.winfo_children():
             widget.destroy()
 
-        # Reload current settings
+        # Load settings
         settings = self.settings_manager.load_settings()
 
-        # Set appearance based on current settings
+        # Apply current settings
         ctk.set_appearance_mode(settings["Color mode"].lower())
-        palette = settings["Colour palette"]
-        ctk.set_default_color_theme(palette["path"])
+        ctk.set_default_color_theme(settings["Colour palette"]["path"])
 
-        # Main scrollable frame
-        main_frame = ctk.CTkScrollableFrame(self, width=460, height=600)
-        main_frame.pack(padx=20, pady=20)
+        # Header section
+        header_frame = ctk.CTkFrame(self, fg_color="transparent")
+        header_frame.pack(fill="x", padx=20, pady=(20, 0))
 
-        # Back button
-        back_button = ctk.CTkButton(
-            main_frame,
+        # Back Button
+        ctk.CTkButton(
+            header_frame,
             text="🔙 Back",
             command=self.go_back,
             width=100,
-            fg_color="transparent",
-            hover_color=("gray85", "gray15"),
-            font=(settings["Font"], 14)
-        )
-        back_button.pack(anchor="w", pady=(10, 20))
-
-        # Status Label
-        self.status_var = ctk.StringVar()
-        self.status_label = ctk.CTkLabel(
-            main_frame,
-            textvariable=self.status_var,
-            text_color="green"
-        )
-        self.status_label.pack(pady=10)
+            font=(settings["Font"], settings["Font size"], "bold" if settings["Font bold"] else "normal")
+        ).pack(side="left")
 
         # Title
         ctk.CTkLabel(
-            main_frame,
-            text="⚙️ Application Settings",
-            font=(settings["Font"], 24, "bold" if settings["Font bold"] else "normal")
-        ).pack(pady=(0, 20))
+            header_frame,
+            text="⚙️ Settings",
+            font=(settings["Font"], 26, "bold" if settings["Font bold"] else "normal"),
+            anchor="center"
+        ).pack(side="top", pady=(0, 10))
 
-        # Font Settings
-        font_frame = self._create_section(main_frame, "🔤 Font Settings")
+        # TabView section
+        tabview = ctk.CTkTabview(self)
+        tabview.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Font Family Dropdown
+        # Create tabs
+        self.create_font_tab(tabview, settings)
+        self.create_appearance_tab(tabview, settings)
+        self.create_sound_tab(tabview, settings)
+
+        # Save Button
+        ctk.CTkButton(
+            self,
+            text="💾 Save Settings",
+            command=self.save_settings,
+            width=300,
+            font=(settings["Font"], settings["Font size"], "bold" if settings["Font bold"] else "normal")
+        ).pack(pady=20)
+
+    def create_font_tab(self, tabview, settings):
+        """Create Font Settings tab."""
+        font_tab = tabview.add("🔤 Font")
         font_options = ["Arial", "Times New Roman", "Comic Sans MS", "Courier New", "Impact", "Georgia"]
+
+        # Font settings
         self.font_var = ctk.StringVar(value=settings["Font"])
-        ctk.CTkLabel(font_frame, text="Font Family").pack(anchor="w")
-        font_menu = ctk.CTkOptionMenu(
-            font_frame,
+        ctk.CTkLabel(
+            font_tab,
+            text="Font Family",
+            font=(settings["Font"], settings["Font size"], "bold" if settings["Font bold"] else "normal")
+        ).pack(anchor="w", pady=(20, 5))
+
+        ctk.CTkOptionMenu(
+            font_tab,
             values=font_options,
             variable=self.font_var,
-            width=300
-        )
-        font_menu.pack(pady=10)
+            width=300,
+            font=(settings["Font"], settings["Font size"])
+        ).pack(pady=10)
 
-        # Bold Font Checkbox
         self.bold_var = ctk.BooleanVar(value=settings["Font bold"])
-        bold_check = ctk.CTkCheckBox(
-            font_frame,
+        ctk.CTkCheckBox(
+            font_tab,
             text="Bold Font",
             variable=self.bold_var,
-            width=300
-        )
-        bold_check.pack(pady=10)
+            width=300,
+            font=(settings["Font"], settings["Font size"])
+        ).pack(pady=10)
 
-        # Appearance Settings
-        appearance_frame = self._create_section(main_frame, "🎨 Appearance")
-
-        # Color Mode Dropdown
+    def create_appearance_tab(self, tabview, settings):
+        """Create Appearance Settings tab."""
+        appearance_tab = tabview.add("🎨 Appearance")
         color_modes = ["Light", "Dark", "System"]
+
+        # Color mode settings
         self.color_mode_var = ctk.StringVar(value=settings["Color mode"])
-        ctk.CTkLabel(appearance_frame, text="Color Mode").pack(anchor="w")
-        color_mode_menu = ctk.CTkOptionMenu(
-            appearance_frame,
+        ctk.CTkLabel(
+            appearance_tab,
+            text="Color Mode",
+            font=(settings["Font"], settings["Font size"], "bold" if settings["Font bold"] else "normal")
+        ).pack(anchor="w", pady=(20, 5))
+
+        ctk.CTkOptionMenu(
+            appearance_tab,
             values=color_modes,
             variable=self.color_mode_var,
-            width=300
-        )
-        color_mode_menu.pack(pady=10)
+            width=300,
+            font=(settings["Font"], settings["Font size"])
+        ).pack(pady=10)
 
-        # Color Theme Dropdown
+        # Color theme settings
         self.color_theme_var = ctk.StringVar(value=settings["Colour palette"]["name"])
-        ctk.CTkLabel(appearance_frame, text="Color Theme").pack(anchor="w")
-        color_theme_menu = ctk.CTkOptionMenu(
-            appearance_frame,
+        ctk.CTkLabel(
+            appearance_tab,
+            text="Color Theme",
+            font=(settings["Font"], settings["Font size"], "bold" if settings["Font bold"] else "normal")
+        ).pack(anchor="w", pady=(10, 5))
+
+        ctk.CTkOptionMenu(
+            appearance_tab,
             values=list(self.colour_palettes.keys()),
             variable=self.color_theme_var,
-            width=300
-        )
-        color_theme_menu.pack(pady=10)
+            width=300,
+            font=(settings["Font"], settings["Font size"])
+        ).pack(pady=10)
 
-        # Sound Settings
-        sound_frame = self._create_section(main_frame, "🔊 Sound")
+    def create_sound_tab(self, tabview, settings):
+        """Create Sound Settings tab."""
+        sound_tab = tabview.add("🔊 Sound")
 
-        # Volume Slider
+        # Volume settings
         self.volume_var = ctk.DoubleVar(value=settings["Volume"])
         self.volume_label = ctk.CTkLabel(
-            sound_frame,
-            text=f"Volume: {int(settings['Volume'])}%"
+            sound_tab,
+            text=f"Volume: {int(settings['Volume'])}%",
+            font=(settings["Font"], settings["Font size"], "bold" if settings["Font bold"] else "normal")
         )
-        self.volume_label.pack(anchor="w")
+        self.volume_label.pack(anchor="w", pady=(20, 5))
 
         volume_slider = ctk.CTkSlider(
-            sound_frame,
+            sound_tab,
             from_=0,
             to=100,
             number_of_steps=100,
@@ -194,38 +220,14 @@ class SettingsUI(ctk.CTk):
             )
         )
 
-        # Save Button
-        save_button = ctk.CTkButton(
-            main_frame,
-            text="💾 Save Settings",
-            command=self.save_settings,
-            width=300
-        )
-        save_button.pack(pady=20)
-
-
-    def _create_section(self, parent, title):
-        """Create a styled section header and frame."""
-        ctk.CTkLabel(
-            parent,
-            text=title,
-            font=("Arial", 16, "bold")
-        ).pack(anchor="w", pady=(10, 5))
-
-        frame = ctk.CTkFrame(parent, fg_color="transparent")
-        frame.pack(fill="x", pady=(0, 15))
-
-        return frame
-
     def go_back(self):
         """Return to the previous window."""
         if self.came_from:
-            self.came_from.deiconify()  # Show the previous window
-        self.destroy()  # Close the settings window
+            self.came_from.deiconify()
+        self.destroy()
 
     def save_settings(self):
-        """Compile and save current settings."""
-        # Gather updated settings
+        """Save current settings."""
         updated_settings = {
             "Font": self.font_var.get(),
             "Font size": 12,
@@ -240,54 +242,25 @@ class SettingsUI(ctk.CTk):
         }
 
         try:
-            # Save the settings
             self.settings_manager.save_settings(updated_settings)
-
-            # Show success message
-            self.status_var.set("✅ Settings saved and applied successfully!")
-
-            # Apply changes to parent window if it exists
             if self.came_from and hasattr(self.came_from, 'refresh_settings'):
                 self.came_from.refresh_settings()
-
-            # Recreate the current window with new settings
-            self.after(100, self.refresh_ui)  # Small delay to ensure message shows
-
+            self.refresh_ui()
         except Exception as e:
             logging.error(f"Error saving settings: {e}")
-            self.status_var.set("❌ Failed to save settings")
-
-        # Clear status message after a delay
-        self.after(2000, lambda: self.status_var.set(""))
 
     def refresh_ui(self):
-        """Refresh the entire UI with new settings."""
-        # Get the current geometry before destroying widgets
+        """Refresh UI with updated settings."""
         current_geometry = self.geometry()
-
-        # Destroy all widgets
-        for widget in self.winfo_children():
-            widget.destroy()
-
-        # Load new settings
-        settings = self.settings_manager.load_settings()
-
-        # Apply new appearance settings
-        ctk.set_appearance_mode(settings["Color mode"].lower())
-        ctk.set_default_color_theme(settings["Colour palette"]["path"])
-
-        # Recreate the UI
         self.create_application()
-
-        # Restore window geometry
         self.geometry(current_geometry)
-
 
 
 def main():
     """Application entry point."""
     app = SettingsUI()
     app.mainloop()
+
 
 if __name__ == "__main__":
     main()
