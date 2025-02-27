@@ -1,0 +1,47 @@
+# Start
+def main():
+    # Load the quiz menu when the application starts
+    load_quiz_menu()
+
+    # While the quiz menu is open, get user choice
+    while quiz_menu_is_open:
+        user_choice = get_user_choice()
+
+        if user_choice == "take_quiz":
+            # Determine if user is teacher or student
+            user_type = check_user_type()
+
+            if user_type == "student":
+                # Load randomly generated quiz questions for student
+                load_random_quiz_questions()
+                # Student takes the quiz
+                execute_quiz()
+            elif user_type == "teacher":
+                # Load quiz results for teacher view
+                load_quiz_results("teacher")
+
+        elif user_choice == "view_results":
+            # Determine if user is teacher or student
+            user_type = check_user_type()
+
+            if user_type == "student":
+                # Load quiz results for student view
+                load_quiz_results("student")
+            elif user_type == "teacher":
+                # Load quiz results for teacher view
+                load_quiz_results("teacher")
+
+        elif user_choice == "open_settings":
+            # Open the settings menu
+            open_settings()
+
+            # When settings are closed, return to quiz menu
+            close_settings()
+            load_quiz_menu()
+
+        elif user_choice == "exit":
+            # Exit the application
+            close_quiz_menu()
+            exit_application()
+            break
+# End

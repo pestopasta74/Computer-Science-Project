@@ -1,0 +1,48 @@
+# Start
+def simulator_module():
+    # Load the simulator window when the module starts
+    load_simulator_window()
+
+    # While the simulator window is open, get user choice
+    while simulator_window_is_open:
+        user_choice = get_user_action()
+
+        if user_choice == "pause_play":
+            # Pause or play the simulation
+            toggle_simulation_state()
+            # Update the simulation and date display
+            update_simulation_and_date()
+
+        elif user_choice == "change_timescale":
+            # Update the simulation timescale
+            new_timescale = get_new_timescale()
+            update_simulation_timescale(new_timescale)
+            # Reflect changes in the simulation
+            apply_timescale_to_simulation()
+
+        elif user_choice == "screenshot":
+            # Take a screenshot of current simulation state
+            capture_simulation_state()
+            # Save image to designated folder
+            save_image_to_folder()
+
+        elif user_choice == "reset_simulator":
+            # Reset the planets to original positions
+            reset_planets_position()
+            # Reset the simulation time/date
+            reset_simulation_datetime()
+
+        elif user_choice == "open_settings":
+            # Open the settings menu
+            open_settings()
+
+            # When settings are closed, return to simulator
+            close_settings()
+            refresh_simulator_window()
+
+        elif user_choice == "back_exit":
+            # Exit the simulator module
+            close_simulator_window()
+            return_to_previous_screen()
+            break
+# End

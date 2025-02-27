@@ -1,0 +1,31 @@
+# Start
+def main_menu():
+    load_main_menu_window()
+
+    while main_menu_is_open:
+        user_action = get_user_action()
+
+        if user_action == "Start Simulator":
+            close_window("Main Menu")
+            load_simulator_module()
+
+        elif user_action == "Start Quiz":
+            close_window("Main Menu")
+            load_quiz_module()
+
+        elif user_action == "See Quiz Results":
+            close_window("Main Menu")
+            load_quiz_results()
+
+        elif user_action == "Open Settings":
+            load_settings_window()
+            while settings_window_is_open:
+                if user_exits_settings():
+                    close_window("Settings")
+                    break
+
+        elif user_action == "Quit App":
+            close_window("Main Menu")
+            exit_application()
+
+# End

@@ -1,0 +1,22 @@
+# Start
+def login_window():
+    load_login_window()
+
+    while login_window_is_open:
+        email, password = get_user_input()
+
+        if remember_me_checked():
+            save_user_details(email, password)
+
+        if validate_credentials(email, password):
+            if is_admin(email):
+                close_window("Login Window")
+                load_main_UI("Teacher")
+            else:
+                close_window("Login Window")
+                load_main_UI("Student")
+
+        else:
+            display_message("Try again")
+
+# End

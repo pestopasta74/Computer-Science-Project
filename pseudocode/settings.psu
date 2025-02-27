@@ -1,0 +1,42 @@
+# Start
+function settings_window():
+    load_settings_window()
+
+    while settings_window_is_open:
+        user_action = get_user_action()
+
+        if user_action == "Change Setting":
+            push_to_undo_stack(current_setting)
+            update_UI()
+
+        elif user_action == "Undo":
+            if undo_stack_is_empty():
+                do_nothing()
+            else:
+                pop_from_undo_stack()
+                push_to_redo_stack(previous_setting)
+                update_UI()
+
+        elif user_action == "Redo":
+            if redo_stack_is_empty():
+                do_nothing()
+            else:
+                pop_from_redo_stack()
+                push_to_undo_stack(previous_setting)
+                update_UI()
+
+        elif user_action == "Back Button":
+            if has_unsaved_changes():
+                confirmation = show_confirmation_popup()
+                if confirmation == "Yes":
+                    close_window()
+                    break
+            else:
+                close_window()
+                break
+
+        elif user_action == "Save Settings":
+            save_to_json(settings)
+            update_UI()
+
+# End
