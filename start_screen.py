@@ -2,6 +2,7 @@ import customtkinter as ctk
 from settings import SettingsManager, SettingsUI
 from PIL import Image
 from modules.window_centre import center_window
+import os
 
 settings = SettingsManager()
 settings.load_settings()
@@ -24,6 +25,13 @@ class StartScreen(ctk.CTk):
         self.settings_image = ctk.CTkImage(
             light_image=Image.open("icons/settings_light.png"),
             dark_image=Image.open("icons/settings_dark.png"),
+            size=(48, 48)
+        )
+
+        # Load quit icon
+        self.quit_image = ctk.CTkImage(
+            light_image=Image.open("icons/Circle_x_Light.png"),
+            dark_image=Image.open("icons/Circle_x_Dark.png"),
             size=(48, 48)
         )
 
@@ -52,6 +60,19 @@ class StartScreen(ctk.CTk):
         )
         self.settings_button.place(x=10, y=10)
 
+        # Quit button
+        self.quit_button = ctk.CTkButton(
+            self,
+            text="",
+            image=self.quit_image,
+            command=self.quit,
+            fg_color="transparent",
+            hover_color="#b0bec5",
+            width=48,
+            height=48
+        )
+        self.quit_button.place(x=430, y=10)
+
         # Control buttons with unified styling
         button_config = {"width": 200, "height": 40, "corner_radius": 20, "font": (settings.settings["Font"], 14)}
         self.start_button = ctk.CTkButton(self, text="Start Simulator", **button_config)
@@ -63,8 +84,16 @@ class StartScreen(ctk.CTk):
         self.sandbox_button = ctk.CTkButton(self, text="See Results", **button_config)
         self.sandbox_button.pack(pady=10)
 
-        self.quit_button = ctk.CTkButton(self, text="Quit", command=self.quit, **button_config)
+        self.quit_button = ctk.CTkButton(self, text="Logout", command=self.logout, **button_config)
         self.quit_button.pack(pady=(10, 30))
+
+    def logout(self):
+        # Delete the user_login_info.txt file if it exists
+        file_path = "user_login_info.txt"
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        self.quit()
+
 
     def open_settings(self):
         # Placeholder function for settings action
