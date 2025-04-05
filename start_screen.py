@@ -1,9 +1,9 @@
 import customtkinter as ctk
-from settings import Settings
+from settings import SettingsManager, SettingsUI
 from PIL import Image
 from modules.window_centre import center_window
 
-settings = Settings()
+settings = SettingsManager()
 settings.load_settings()
 
 class StartScreen(ctk.CTk):
@@ -12,13 +12,13 @@ class StartScreen(ctk.CTk):
 
         # Configure window
         self.size = "500x500"
-        self.title("Solar System Simulator")
+        self.title("Main Menu")
         self.resizable(False, False)
         center_window(self, self.size)
 
         # Set appearance and theme
-        ctk.set_appearance_mode(settings.color_mode)
-        ctk.set_default_color_theme(settings.colour_palette["path"])
+        ctk.set_appearance_mode(settings.settings["Color mode"])
+        ctk.set_default_color_theme(settings.settings["Colour palette"]["path"])
 
         # Load settings icon
         self.settings_image = ctk.CTkImage(
@@ -35,7 +35,7 @@ class StartScreen(ctk.CTk):
         self.label = ctk.CTkLabel(
             self,
             text="Solar System Simulator",
-            font=(settings.font, 24, "bold")
+            font=(settings.settings["Font"], 24, "bold")
         )
         self.label.pack(pady=(30, 20))
 
@@ -53,14 +53,14 @@ class StartScreen(ctk.CTk):
         self.settings_button.place(x=10, y=10)
 
         # Control buttons with unified styling
-        button_config = {"width": 200, "height": 40, "corner_radius": 20, "font": (settings.font, 14)}
+        button_config = {"width": 200, "height": 40, "corner_radius": 20, "font": (settings.settings["Font"], 14)}
         self.start_button = ctk.CTkButton(self, text="Start Simulator", **button_config)
         self.start_button.pack(pady=(10, 10))
 
         self.quiz_button = ctk.CTkButton(self, text="Take Quiz", **button_config)
         self.quiz_button.pack(pady=10)
 
-        self.sandbox_button = ctk.CTkButton(self, text="Sandbox Mode", **button_config)
+        self.sandbox_button = ctk.CTkButton(self, text="See Results", **button_config)
         self.sandbox_button.pack(pady=10)
 
         self.quit_button = ctk.CTkButton(self, text="Quit", command=self.quit, **button_config)
