@@ -82,6 +82,8 @@ class Body:
         self.reset_y = start_y
         self.reset_vx = self.start_vx
         self.reset_vy = self.start_vy
+
+
     def update(self, bodies, time_step=time_step):
         # Only consider the sun for gravitational force
         sun = next(body for body in bodies if body.name == "Sun")

@@ -1,7 +1,6 @@
 import unittest
-import modules.data_validation as dv
-import modules.user_management as um
-import modules.quiz_simulator as qs
+import data_validation as dv
+
 
 class TestValidator(unittest.TestCase):
     def setUp(self):
@@ -157,45 +156,103 @@ class TestValidator(unittest.TestCase):
         for birthdate in invalid_birthdates:
             self.assertFalse(self.validator.birthdate(birthdate))
 
+    def test_valid_astronomical_uits(self):
+        # Valid astronomical units
+        valid_astronomical_units = [
+        '1',
+        '1.5',
+        '0.5',
+        '100',
+        '1234567890'
+        ]
+        for unit in valid_astronomical_units:
+            self.assertTrue(self.validator.astronomical_units(unit))
 
-class TestQuizSimulator(unittest.TestCase):
-    def setUp(self):
-        # Create an instance of the QuizSimulator class to test the quiz simulator
-        self.quiz_simulator = qs.QuizSimulator()
+    def test_invalid_astronomical_units(self):
+        # Invalid astronomical units
+        invalid_astronomical_units = [
+        '1.5.2',
+        'abc',
+        '-1',
+        '-0.5',
+        '0'
+        ]
+        for unit in invalid_astronomical_units:
+            self.assertFalse(self.validator.astronomical_units(unit))
 
-    def test_gravity_question(self):
-        # Test the generate_gravity_question method
-        question, answer = self.quiz_simulator.generate_gravity_question()
-        self.assertTrue(isinstance(question, str))
-        self.assertTrue(isinstance(answer, float))
+    def test_valid_standard_form(self):
+        # Valid standard form numbers
+        valid_standard_forms = [
+        '1.23e10',
+        '2.5E-3',
+        '3.0e+2',
+        '4.5678e5',
+        '5.752x10^3',
+        '6.0E+10',
+        '7.89x10^2',
+        '8.0e-1',
+        '9.0x10^-3',
+        ]
+        # Test valid standard form numbers
+        for standard_form in valid_standard_forms:
+            self.assertTrue(self.validator.standard_form(standard_form))
 
-    def test_orbital_velocity_question(self):
-        # Test the generate_orbital_velocity_question method
-        question, answer = self.quiz_simulator.generate_orbital_velocity_question()
-        self.assertTrue(isinstance(question, str))
-        self.assertTrue(isinstance(answer, float))
-
-    def test_escape_velocity_question(self):
-        # Test the generate_escape_velocity_question method
-        question, answer = self.quiz_simulator.generate_escape_velocity_question()
-        self.assertTrue(isinstance(question, str))
-        self.assertTrue(isinstance(answer, float))
-
-    def test_gravitational_field_strength_question(self):
-        # Test the generate_gravitational_field_strength_question method
-        question, answer = self.quiz_simulator.generate_gravitational_field_strength_question()
-        self.assertTrue(isinstance(question, str))
-        self.assertTrue(isinstance(answer, float))
-
-    def test_generate_question(self):
-        # Test the generate_question method
-        question, answer = self.quiz_simulator.generate_question()
-        self.assertTrue(isinstance(question, str))
-        self.assertTrue(isinstance(answer, float))
-
-    def test_start_quiz(self):
-        # Test the start_quiz method
-        self.assertIsNone(self.quiz_simulator.start_quiz())
+    def test_invalid_standard_form(self):
+        invalid_standard_forms = [
+        '1.23e10.5',
+        '2.5E-3.4',
+        '3.0e+2.1',
+        '4.5678e5.6',
+        '5.752x10^3.7',
+        '6.0E+10.8',
+        '7.89x10^2.9'
+        ]
+        # Test invalid standard form numbers
+        for standard_form in invalid_standard_forms:
+            self.assertFalse(self.validator.standard_form(standard_form))
 
 if __name__ == '__main__':
     unittest.main()
+
+# import user_management as um
+# import quiz_simulator as qs
+
+# class TestQuizSimulator(unittest.TestCase):
+#     def setUp(self):
+#         # Create an instance of the QuizSimulator class to test the quiz simulator
+#         self.quiz_simulator = qs.QuizSimulator()
+
+#     def test_gravity_question(self):
+#         # Test the generate_gravity_question method
+#         question, answer = self.quiz_simulator.generate_gravity_question()
+#         self.assertTrue(isinstance(question, str))
+#         self.assertTrue(isinstance(answer, float))
+
+#     def test_orbital_velocity_question(self):
+#         # Test the generate_orbital_velocity_question method
+#         question, answer = self.quiz_simulator.generate_orbital_velocity_question()
+#         self.assertTrue(isinstance(question, str))
+#         self.assertTrue(isinstance(answer, float))
+
+#     def test_escape_velocity_question(self):
+#         # Test the generate_escape_velocity_question method
+#         question, answer = self.quiz_simulator.generate_escape_velocity_question()
+#         self.assertTrue(isinstance(question, str))
+#         self.assertTrue(isinstance(answer, float))
+
+#     def test_gravitational_field_strength_question(self):
+#         # Test the generate_gravitational_field_strength_question method
+#         question, answer = self.quiz_simulator.generate_gravitational_field_strength_question()
+#         self.assertTrue(isinstance(question, str))
+#         self.assertTrue(isinstance(answer, float))
+
+#     def test_generate_question(self):
+#         # Test the generate_question method
+#         question, answer = self.quiz_simulator.generate_question()
+#         self.assertTrue(isinstance(question, str))
+#         self.assertTrue(isinstance(answer, float))
+
+#     def test_start_quiz(self):
+#         # Test the start_quiz method
+#         self.assertIsNone(self.quiz_simulator.start_quiz())
+

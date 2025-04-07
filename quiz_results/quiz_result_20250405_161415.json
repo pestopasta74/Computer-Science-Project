@@ -1,0 +1,50 @@
+{
+    "date": "2025-04-05T16:14:15.370090",
+    "score": 3,
+    "total_questions": 10,
+    "score_percentage": 30.0,
+    "wrong_questions": [
+        {
+            "question": "What is the orbital velocity of a body in orbit around a mass of 9.16 x 10^31 kg at a distance of 8.89 x 10^9 meters?",
+            "correct_answer": "8.30 x 10^5",
+            "user_answer": "1.00 x 10^0",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the gravitational force between the Sun (1.99 x 10^30 kg) and Venus (6.05 x 10^3 kg)?",
+            "correct_answer": "3.39 x 10^-26",
+            "user_answer": "1.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 5.06 x 10^24 kg and 6.51 x 10^24 kg separated by 3.55 x 10^8 meters?",
+            "correct_answer": "1.74 x 10^22",
+            "user_answer": "1.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 3.83 x 10^24 kg and 8.38 x 10^23 kg separated by 9.42 x 10^8 meters?",
+            "correct_answer": "2.41 x 10^20",
+            "user_answer": "1.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the escape velocity from a mass of 7.93 x 10^31 kg at a distance of 8.91 x 10^8 meters?",
+            "correct_answer": "3.45 x 10^6",
+            "user_answer": "1.00 x 10^0",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the escape velocity from Jupiter (6.99 x 10^4 kg) at a distance of 1.90 x 10^27 meters?",
+            "correct_answer": "7.01 x 10^-17",
+            "user_answer": "1.00 x 10^0",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the orbital velocity of Mercury around the Sun (1.99 x 10^30 kg) at a distance of 5.83 x 10^10 meters?",
+            "correct_answer": "4.77 x 10^4",
+            "user_answer": "1.00 x 10^0",
+            "units": "m/s"
+        }
+    ]
+}

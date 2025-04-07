@@ -12,7 +12,7 @@ class SimulationDatabase:
         # Create a Planets table with the specified columns
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS Planets (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            name TEXT NOT NULL,
+                            name TEXT NOT NULL UNIQUE,
                             radius REAL NOT NULL,
                             mass REAL NOT NULL,
                             start_x REAL NOT NULL,
@@ -66,7 +66,10 @@ def main():
     db.add_planet('Neptune', 24622, 1.024 * 10**26, 30.05 * AU, 0, 0, 5430, 'Neptune is the farthest planet from the Sun and has strong winds.', 'blue', 'planet_images/neptune.png')
 
     # Print all planets
+    print("All planets in the database:")
     print(db.get_planets())
+
+    print("\n Searching for planets with 'Earth' in their name:")
 
     # Search for planets
     print(db.search_planets('Earth'))

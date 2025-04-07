@@ -1,6 +1,5 @@
 import sqlite3
 import bcrypt
-from unittest import TestCase
 
 class UserDatabase:
     def __init__(self):
@@ -13,13 +12,13 @@ class UserDatabase:
                             (id INTEGER PRIMARY KEY AUTOINCREMENT,
                             email TEXT NOT NULL UNIQUE,
                             password TEXT NOT NULL,
-                            is_teacher BOOL NOR NULL);''')
+                            is_teacher BOOL NOT NULL);''')
         self.conn.commit()
 
-    def add_user(self, email, password, is_admin=False):
+    def add_user(self, email, password, is_teacher=False):
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         print(hashed_password)
-        self.cursor.execute("INSERT INTO users (email, password, is_admin) VALUES (?, ?, ?)",  (email, hashed_password, is_admin))
+        self.cursor.execute("INSERT INTO users (email, password, is_teacher) VALUES (?, ?, ?)",  (email, hashed_password, is_teacher))
         self.conn.commit()
 
     def check_user(self, email, password):
@@ -37,12 +36,20 @@ class UserDatabase:
         self.cursor.close()
         self.conn.close()
 
-#class UserSettingsDatabase:
-
 
 def main():
     db = UserDatabase()
     db.add_user('john@hotmail.com', 'password123', is_teacher=True)
+    db.add_user('rachel@sfc.potteries.ac.uk', 'password456', is_teacher=True)
+    db.add_user('B4397@sfc.potteries.ac.uk', 'password789', is_teacher=False)
+    db.add_user('Karim@gmail.com', 'password101', is_teacher=False)
+
+    # Testing password validation
+    print(db.check_user('john@hotmail.com', 'password123'))  # True
+    print(db.check_user('rachel@sfc.potteries.ac.uk', 'password456'))  # True
+    print(db.check_user('B4397@sfc.potteries.ac.uk', 'password789'))  # True
+    print(db.check_user('Karim@gmail.com', 'password101'))  # True
+    print(db.check_user('john@hotmail.com', 'wrongpassword'))  # False
 
 if __name__ == '__main__':
     main()
