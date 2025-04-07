@@ -413,15 +413,7 @@ class Simulator:
         time_diff = new_date - self.epoch
         self.time = time_diff.total_seconds()
 
-    def take_screenshot(self):
-        # Create screenshots directory if it doesn't exist
-        if not os.path.exists('screenshots'):
-            os.makedirs('screenshots')
 
-        # Generate filename with current date and time
-        filename = f"screenshots/solar_system_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-        pygame.image.save(window, filename)
-        print(f"Screenshot saved as {filename}")
 
     def toggle_running(self):
         self.paused = not self.paused

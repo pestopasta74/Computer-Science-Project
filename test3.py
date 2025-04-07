@@ -10,7 +10,7 @@ from tkinter import *
 from tkinter import ttk
 import calendar
 import threading
-from settings import Settings
+from settings import SettingsManager
 
 # Initialize Pygame
 pygame.init()
@@ -195,7 +195,7 @@ class Simulator:
         self.paused = False
         self.clock = pygame.time.Clock()
         self.time = 0
-        self.settings = Settings()
+        self.settings = SettingsManager()
         self.epoch = datetime(2000, 1, 1)
         self.bodies = bodies
         self.initialize_buttons()

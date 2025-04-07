@@ -37,11 +37,11 @@ class LoginUI(ctk.CTk):
         self.validator = DataValidator()
         self.verify_user = UserDatabase()
 
-        # Load icons with increased size
+        # Load icons with light and dark mode
         self.settings_image = ctk.CTkImage(
             light_image=Image.open("icons/settings_light.png"),
             dark_image=Image.open("icons/settings_dark.png"),
-            size=(24, 24)  # Smaller, more professional size
+            size=(24, 24)
         )
 
         self.close_image = ctk.CTkImage(
@@ -82,7 +82,7 @@ class LoginUI(ctk.CTk):
         )
         self.header_frame.pack(fill="x", padx=20, pady=(20, 0))
 
-        # Close and settings buttons with refined styling
+        # Close and settings buttons
         self.close_button = ctk.CTkButton(
             self.header_frame,
             text="",

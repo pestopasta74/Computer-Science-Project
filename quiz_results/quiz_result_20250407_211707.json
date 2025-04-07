@@ -1,0 +1,56 @@
+{
+    "date": "2025-04-07T21:17:07.159061",
+    "score": 2,
+    "total_questions": 10,
+    "score_percentage": 20.0,
+    "wrong_questions": [
+        {
+            "question": "What is the orbital velocity of Jupiter around the Sun (1.99 x 10^30 kg) at a distance of 7.78 x 10^11 meters?",
+            "correct_answer": "1.31 x 10^4",
+            "user_answer": "5.00 x 10^0",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 3.90 x 10^23 kg and 4.32 x 10^24 kg separated by 2.12 x 10^8 meters?",
+            "correct_answer": "2.49 x 10^21",
+            "user_answer": "3.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the escape velocity from a mass of 9.11 x 10^31 kg at a distance of 5.78 x 10^9 meters?",
+            "correct_answer": "1.45 x 10^6",
+            "user_answer": "4.00 x 10^0",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 9.89 x 10^24 kg and 5.68 x 10^24 kg separated by 4.09 x 10^8 meters?",
+            "correct_answer": "2.24 x 10^22",
+            "user_answer": "4.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 5.42 x 10^24 kg and 2.63 x 10^24 kg separated by 2.85 x 10^8 meters?",
+            "correct_answer": "1.17 x 10^22",
+            "user_answer": "4.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the escape velocity from a mass of 4.58 x 10^31 kg at a distance of 9.83 x 10^9 meters?",
+            "correct_answer": "7.88 x 10^5",
+            "user_answer": "4.00 x 10^0",
+            "units": "m/s"
+        },
+        {
+            "question": "What is the gravitational force between two masses of 8.58 x 10^24 kg and 2.52 x 10^24 kg separated by 8.24 x 10^8 meters?",
+            "correct_answer": "2.13 x 10^21",
+            "user_answer": "4.00 x 10^0",
+            "units": "N"
+        },
+        {
+            "question": "What is the escape velocity from Jupiter (6.99 x 10^4 kg) at a distance of 1.90 x 10^27 meters?",
+            "correct_answer": "7.01 x 10^-17",
+            "user_answer": "4.00 x 10^0",
+            "units": "m/s"
+        }
+    ]
+}
